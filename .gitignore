@@ -1,0 +1,24 @@
+# Build artefacts
+build/
+
+# Local LLM config (may contain API keys — NEVER commit)
+config.local.*
+*.local.toml
+*.local.json
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# direnv layout cache
+.direnv/
+
+# Do NOT ignore:
+#   flake.lock  — pin Nix inputs; commit alongside flake.nix changes
