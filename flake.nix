@@ -63,7 +63,7 @@
         # Usage: nix develop .#windows
         #   odin build . -target:windows_amd64 -extra-linker-flags:"-L$RAYLIB_WIN -lraylib"
         devShells.windows = pkgs.mkShell {
-          name = "cenders-windows";
+          name = "cendres-windows";
 
           packages = [
             pkgs.odin
