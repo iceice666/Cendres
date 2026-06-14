@@ -62,9 +62,40 @@ Pressure_Type :: enum {
 }
 ```
 
-早期波次：單一壓力類型，低密度，緩慢物種。
-中期波次：兩種壓力類型，Salvage Phase 窗口縮短。
-後期波次：Composite 壓力；Dimming Surge 前置音效開始播放。
+### Run 長度
+
+- 標準：8–12 波 / run，預估 35–50 分鐘
+- Salvage Phase 視窗隨進度縮短：90 秒 → 60 秒 → 40 秒
+
+### 排序規則（加權隨機＋約束）
+
+```
+約束條件：
+  - 同一 Pressure_Type 不能連出兩波
+  - Composite 不出現在前 3 波
+  - 一次 run 中 Composite 最多 3 波
+  - 第 1 波永遠是 Volume（讓玩家熟悉場地）
+  - 最終波永遠是 Dimming Surge（Composite + 全境黑暗推進）
+```
+
+| 階段 | Volume | Speed | Flank | Fuel_Drain | Siege | Composite |
+|---|---|---|---|---|---|---|
+| 早期（1–4 波） | 60% | 30% | 10% | 0% | 0% | 0% |
+| 中期（5–8 波） | 17% | 17% | 17% | 17% | 17% | 15% |
+| 後期（9+ 波） | 14% | 14% | 14% | 14% | 14% | 30% |
+
+中期 Composite 15% 仍受約束規則限制，實際出現機率低於表面數字。
+
+### 波次 × 生產鏈互動
+
+| Pressure Type | 對生產鏈的具體威脅 |
+|---|---|
+| Volume | Lumen 掉落豐沛，Refiner 滿載；是囤積 Dye 的最佳視窗 |
+| Speed | 快攻壓縮反應時間；Dyed Lumen 效率紅利在此時最有感 |
+| Flank | Lurker 繞後，可能直取 Refiner / Converter 後端 |
+| Fuel_Drain | Gnasher 優先攻擊結構；Refiner / Converter 是高價值目標 |
+| Siege | Weave 生成者製造暗區，切斷 Dyed Lumen 的流通範圍 |
+| Composite | 以上多重組合；生產鏈和防線同時承壓 |
 
 ---
 
