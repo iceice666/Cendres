@@ -39,13 +39,15 @@ check:
 # Type-check every sub-package (stubs are validated here, not via main).
 # Uses -build-mode:lib so non-main packages don't need an entry point.
 check-all:
-    @TMP=/tmp/cendres-check-pkg.a; \
-    for pkg in core game render narrative "narrative/llm" garden save; do \
-        echo "--- odin check $$pkg ---"; \
-        odin build "$$pkg" -build-mode:lib -out:$$TMP || exit 1; \
-        rm -f "$$TMP"; \
+    #!/bin/bash
+    set -euo pipefail
+    TMP=/tmp/cendres-check-pkg.a
+    for pkg in core game render narrative "narrative/llm" garden save; do
+        echo "--- odin check $pkg ---"
+        odin build "$pkg" -build-mode:lib -out:$TMP || exit 1
+        rm -f "$TMP"
     done
-    @echo "All packages OK."
+    echo "All packages OK."
 
 # Format all .odin files in-place.
 # Requires odinfmt (not bundled by homebrew odin/ols on macOS 26).
@@ -57,9 +59,11 @@ fmt:
 
 # Run tests (placeholder — no tests yet, recipe in place for Phase 0+)
 test:
-    @for pkg in core game render narrative "narrative/llm" garden save; do \
-        echo "--- odin test $$pkg ---"; \
-        odin test "$$pkg"; \
+    #!/bin/bash
+    set -euo pipefail
+    for pkg in core game render narrative "narrative/llm" garden save; do
+        echo "--- odin test $pkg ---"
+        odin test "$pkg"
     done
 
 # Remove build artefacts
