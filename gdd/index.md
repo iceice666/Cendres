@@ -51,8 +51,8 @@ graph TD
 |---|---|
 | [01-vision-pillars.md](01-vision-pillars.md) | Vision Statement、核心 Fantasy、核心支柱 |
 | [02-visual-audio.md](02-visual-audio.md) | 視覺語言、音效方向 |
-| [03-narrative.md](03-narrative.md) | 世界觀、完整真相、Beacon 角色 |
-| [04-endings.md](04-endings.md) | 三個結局、結局設計哲學 |
+| [03-narrative.md](03-narrative.md) | 世界觀、完整真相、Beacon 角色、玩家起源（§5.5） |
+| [04-endings.md](04-endings.md) | 四個結局、結局設計哲學（§6.4 薛西弗斯對照） |
 | [05-run-structure.md](05-run-structure.md) | Run 節拍圖、波次升級、輪間持續性 |
 | [06-combat.md](06-combat.md) | 戰鬥哲學、Lantern 能力、結構行為、捕捉流程 |
 | [07-technical.md](07-technical.md) | 技術選型、資料結構、Raycasting、LLM 系統 |
