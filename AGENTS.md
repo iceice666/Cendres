@@ -57,7 +57,7 @@ just build        # compile → build/cendres
 just run          # build + launch the window
 just check        # type-check main package
 just check-all    # type-check every sub-package (validates stubs too)
-just fmt          # odinfmt -w . (format in-place)
+just fmt          # odinfmt -w src (format in-place)
 just clean        # rm -rf build
 just build-release        # optimised build
 just build-windows        # Windows cross-compile (see Justfile for flags)
@@ -66,12 +66,12 @@ just build-windows        # Windows cross-compile (see Justfile for flags)
 The build command used inside `just build` is (verified on macOS 26 / aarch64):
 
 ```bash
-odin build . -out:build/cendres
+odin build src -out:build/cendres
 ```
 
 The homebrew `odin` distribution ships the `vendor:raylib` *bindings* (Odin API wrapper)
 but NOT the raylib static lib. The nix devShell sets `NIX_LDFLAGS` so the linker finds
-the nix-provided `raylib 6.0` automatically — this is why a plain `odin build .` works
+the nix-provided `raylib 6.0` automatically — this is why `odin build src` works
 when inside `nix develop` / direnv. Do not run `odin build` outside the devShell.
 
 ---
@@ -82,17 +82,17 @@ One Odin package per directory — Odin forbids import cycles, so cross-cutting
 types will live in `core` once Phase 0 begins:
 
 ```
-main.odin              package main   — entry point (Raylib window)
-core/                  package core   — shared types: Player, Light_Source,
-                                        Void_Entity, Game_State, LLM_Context, …
-game/                  package game   — state, player, raycaster, map, light,
-                                        structure, void, wave, lumen
-render/                package render — screen compositor, HUD, billboard sprites
-narrative/             package narrative — Beacon dialogue, Void Codex, imprints
-narrative/llm/         package llm   — LLM config, context assembly, prompt builder,
-                                        HTTP client, handwritten fallback pool
-garden/                package garden — Void Garden state, Beacon Reflection space
-save/                  package save  — cross-run persistence
+src/main.odin              package main   — entry point (Raylib window)
+src/core/                  package core   — shared types: Player, Light_Source,
+                                            Void_Entity, Game_State, LLM_Context, …
+src/game/                  package game   — state, player, raycaster, map, light,
+                                            structure, void, wave, lumen
+src/render/                package render — screen compositor, HUD, billboard sprites
+src/narrative/             package narrative — Beacon dialogue, Void Codex, imprints
+src/narrative/llm/         package llm   — LLM config, context assembly, prompt builder,
+                                            HTTP client, handwritten fallback pool
+src/garden/                package garden — Void Garden state, Beacon Reflection space
+src/save/                  package save  — cross-run persistence
 ```
 
 Each stub file currently contains only its `package` declaration + a GDD-section comment
@@ -116,13 +116,13 @@ GDD module mapping: **`gdd/09-technical.md` §9.5**.
 ## LLM system — design constraints (do not violate)
 
 The LLM is a **style layer**, never a narrative decision-maker. Any agent touching
-`narrative/llm/` must understand:
+`src/narrative/llm/` must understand:
 
 | Rule | Detail |
 |------|--------|
 | Critical-run lines are **always** handwritten | Runs 11, 17, 24, 29 and all three endings bypass the LLM entirely — never route them through LLM generation |
-| `truth_layer` constraints are absolute | The system prompt in `narrative/llm/prompt.odin` encodes what Beacon is allowed to imply per run range (1–10 / 11–22 / 23–28). Never generate code that leaks Layer 3 information in Layer 1. Red-team this before Phase 2 ships. |
-| Fallback is always present | `narrative/llm/fallback.odin`'s `get_handwritten_line` must cover every `Death_Cause` × every `run_count`. LLM failure is silent; the player never sees an error. |
+| `truth_layer` constraints are absolute | The system prompt in `src/narrative/llm/prompt.odin` encodes what Beacon is allowed to imply per run range (1–10 / 11–22 / 23–28). Never generate code that leaks Layer 3 information in Layer 1. Red-team this before Phase 2 ships. |
+| Fallback is always present | `src/narrative/llm/fallback.odin`'s `get_handwritten_line` must cover every `Death_Cause` × every `run_count`. LLM failure is silent; the player never sees an error. |
 | API keys / local config are **never committed** | `LLM_Config.api_key` is stored in a local file (e.g. `config.local.toml`) that is `.gitignore`d. Do not add it to any tracked file. |
 
 ---

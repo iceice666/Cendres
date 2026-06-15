@@ -12,7 +12,7 @@ default:
 # Build the native binary
 build:
     mkdir -p build
-    odin build . -out:build/cendres
+    odin build src -out:build/cendres
 
 # Build and run (opens the Raylib window)
 run: build
@@ -21,20 +21,20 @@ run: build
 # Release build (optimised)
 build-release:
     mkdir -p build
-    odin build . -out:build/cendres -o:speed
+    odin build src -out:build/cendres -o:speed
 
 # Windows cross-compile (run from macOS/Linux)
 # Requires: nix develop .#windows
 # See flake.nix devShells.windows for full instructions.
 build-windows:
-    nix develop .#windows --command odin build . \
+    nix develop .#windows --command odin build src \
         -target:windows_amd64 \
         -out:build/cendres.exe \
         -extra-linker-flags:"-L$RAYLIB_WIN/lib -lraylib"
 
 # Type-check main package only
 check:
-    odin check .
+    odin check src
 
 # Type-check every sub-package (stubs are validated here, not via main).
 # Uses -build-mode:lib so non-main packages don't need an entry point.
@@ -42,7 +42,7 @@ check-all:
     #!/bin/bash
     set -euo pipefail
     TMP=/tmp/cendres-check-pkg.a
-    for pkg in core game render narrative "narrative/llm" garden save; do
+    for pkg in src/core src/game src/render src/narrative "src/narrative/llm" src/garden src/save; do
         echo "--- odin check $pkg ---"
         odin build "$pkg" -build-mode:lib -out:$TMP || exit 1
         rm -f "$TMP"
@@ -55,13 +55,13 @@ check-all:
 # Then put the resulting binary on PATH.
 fmt:
     @command -v odinfmt >/dev/null 2>&1 || { echo "odinfmt not found — see Justfile comment above"; exit 1; }
-    odinfmt -w .
+    odinfmt -w src
 
 # Run tests (placeholder — no tests yet, recipe in place for Phase 0+)
 test:
     #!/bin/bash
     set -euo pipefail
-    for pkg in core game render narrative "narrative/llm" garden save; do
+    for pkg in src/core src/game src/render src/narrative "src/narrative/llm" src/garden src/save; do
         echo "--- odin test $pkg ---"
         odin test "$pkg"
     done
