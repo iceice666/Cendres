@@ -5,8 +5,8 @@
 | 項目 | 選擇 | 理由 |
 |---|---|---|
 | 語言 | Odin | 低層控制、無 GC 暫停、適合 game loop |
-| Renderer | Raylib | 輕量、API 簡潔、2.5D raycasting 友好 |
-| 視角技術 | Raycasting 2.5D | 光暗系統與 raycasting 本身同構 |
+| Renderer | Raylib | 輕量、API 簡潔；3D 場景 + 自訂 GLSL fragment shader |
+| 視角技術 | Raylib 3D + GLSL shader | per-pixel 亮度由 fragment shader 計算；`DrawModel` 自動傳入 `matModel` |
 | 場景結構 | 箱庭（單一封閉場景） | 情感密度、技術複雜度低 |
 | 資產格式 | PNG sprite、手繪 texture | 油畫視覺風格 |
 | 音效 | Raylib 內建音效 API | 足夠用，不過度工程化 |
@@ -21,7 +21,7 @@ cendres/
 ├── game/
 │   ├── state.odin      -- Game_State（phase、run_count 等）
 │   ├── player.odin     -- 玩家移動、Lantern 能力
-│   ├── raycaster.odin  -- Raycasting + 光暗積分
+│   ├── renderer.odin   -- 3D 場景送出：DrawModel 呼叫、shader uniform 更新
 │   ├── map.odin        -- Tile map、Cell 操作
 │   ├── light.odin      -- Light_Source 管理、疊加計算
 │   ├── structure.odin  -- 光源結構 tick、放置、拆除

@@ -14,11 +14,13 @@
 - 美術方向走油畫筆觸：牆面 texture 手繪感，sprite 有不規則邊緣。
 - Void 生物在光中露出暗沉的暖色底調；在黑暗中只有輪廓和眼睛發光。
 
-**2.5D Raycasting 的視覺特性：**
-- 牆高固定，但 texture 用油畫風手繪
-- Void sprite 是 billboard（永遠面向玩家），但有動畫幀
-- 地板和天花板用漸層渲染（靠近光源越暖，遠離越冷灰）
-- 光暗截斷是 raycasting 的自然副產品——不需要額外做 fog of war
+**3D + GLSL shader 的視覺特性：**
+- Raylib 3D 場景：tile map → cube 牆壁 + 平面地板／天花板
+- 光暗效果由 fragment shader 計算：每個像素依距最近光源的 XZ 距離決定亮度
+- 地板和天花板逐像素漸層：#F5C842 Amber（光源附近）→ #2A2A2A Void Black（光源外）
+- 多光源加法疊加（亮度 clamp 1.0），玩家 Lantern + 結構光源同時作用
+- Void sprite 仍是 billboard（DrawBillboard，永遠面向玩家）
+- 牆面 texture 手繪油畫風；shader 的 vertex color tint 讓每面牆可有色相偏移
 
 ---
 

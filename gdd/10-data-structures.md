@@ -110,9 +110,9 @@ conversion_decay:               f32 : 0.55  // 活體轉化遞減係數（起始
 //   → 當 Garden / Run struct 建立時移入對應套件
 
 // === 玩家狀態 ===
+// 視角由 Raylib Camera3D 管理（FIRST_PERSON 模式），不存在 Player struct 中
 Player :: struct {
-    pos:            rl.Vector2,
-    angle:          f32,        // 視角朝向（raycasting 用）
+    pos:            rl.Vector3,  // 3D 世界座標（Y 固定為眼部高度）
     lantern_fuel:   f32,
     lantern_type:   Lantern_Kind,
     lumen_carried:  f32,
