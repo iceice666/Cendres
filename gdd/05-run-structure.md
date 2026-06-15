@@ -97,6 +97,8 @@ Pressure_Type :: enum {
 | Siege | Weave 生成者製造暗區，切斷 Dyed Lumen 的流通範圍 |
 | Composite | 以上多重組合；生產鏈和防線同時承壓 |
 
+**氣質與壓力類型的分工：** `Pressure_Type` 決定波次**組成**（哪些物種、比例、方向）；`Temperament`（見 §8.1a）決定**個體 AI**。兩者組合，不衝突——Fuel_Drain 的結構壓力來自生成 Territorial 權重的 Gnasher，Flank 的側翼效果來自 Timid 權重的 Lurker，各自只定義一次。
+
 ---
 
 ## 7.3 輪間持續性
@@ -195,7 +197,7 @@ Garden 生物有一個隱藏計數（不顯示），影響行為豐富度和 Cod
 
 ## 7.5 Behemoth 捕捉流程
 
-Behemoth 是 Garden 裡唯一不能被 Tether 捕捉的生物。它不是被帶回來的——**它決定走進來**。
+Behemoth 是 Garden 裡唯一不能被 Tether 捕捉的生物。它不是被帶回來的——**它決定走進來**。唯一的互動方式是 Lantern 聆聽模式（§8.5）；§8.4 的捕捉流程（HP 門檻 / 引導 / 中斷 → Feral）對 Behemoth 完全不適用，且 Behemoth 免疫 Feral（見 §8.1a）。
 
 ### 出現條件
 
