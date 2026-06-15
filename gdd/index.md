@@ -5,7 +5,7 @@
 |---|---|
 | 工作標題 | Cendres |
 | 類型 | 第一人稱塔防 / Roguelite |
-| 目標平台 | PC（MacOS / Linux） |
+| 目標平台 | PC（MacOS / Linux / Windows） |
 | 技術棧 | Odin + Raylib |
 | 場景結構 | 箱庭（封閉場景，無大世界） |
 | 視角技術 | Raycasting 2.5D |
