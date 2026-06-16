@@ -27,7 +27,7 @@ Void_Entity :: struct {
     temperament_timer: f32,              // >0 表示 Feral 暫時覆寫生效中；歸 0 時回復 base_temperament
     pos:               rl.Vector2,
     hp:                f32,
-    light_tolerance:   f32,             // 0.0 在光中受傷，1.0 完全免疫
+    light_tolerance:   f32,             // 靈光耐受度；0.0 在靈光中受傷，1.0 完全免疫
     mutation:          Maybe(Mutation),
     lore_name:         Maybe(string),   // 有名字的個體
     is_capturable:     bool,            // hp < 25% 且在光源內（Behemoth 恆為 false）

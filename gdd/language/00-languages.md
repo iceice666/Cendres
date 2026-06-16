@@ -1,8 +1,60 @@
-# Ubiquitous Language — 通用語言
+# 通用語言 — 台灣正體中文用語表
 
-> **DDD 通用語言原則：** 設計師與程式碼之間，只存在一套詞彙。遊戲文本用中文，
-> 程式碼用英文識別符，但命名的是同一個概念。本文件是兩端的對照錨點。
+> **DDD 通用語言原則：** 設計師、寫手與程式碼之間，只存在一套詞彙。
+> GDD 正文以台灣正體中文命名概念；程式碼使用英文識別符，但命名的是同一個概念。
+> 本文件是兩端的對照錨點。
 > 任何新增的概念，先在這裡命名，再進入程式碼。
+
+---
+
+## 0. 台灣正體中文原生化規則
+
+本文件不是英中翻譯表。它先確立中文概念，再替程式碼、資料欄位與外部工具選擇英文識別符。
+
+### 0.1 中文主詞優先
+
+- 章節標題、企劃正文、玩家可見文字，使用中文術語作主詞：寫「每輪開始於餘映」，不寫「每個 Run 在 Reflection 開始」。
+- 英文只在三種地方出現：Odin 識別符、外部技術名、首次建立對照的括號。
+- 首次出現格式：`中文術語（English 對照；Odin: code_identifier）`。後文若非討論程式碼，只用中文術語。
+- 世界觀專名以中文名承擔情緒重量：**餘燼**、**拾薪者**、**消光**、**靈光**、**虛空**。英文名只供程式與查找。
+
+### 0.2 英文保留條件
+
+| 類型 | 處理方式 | 例子 |
+|---|---|---|
+| 語言 / 函式庫 / 外部規格 | 保留英文 | Odin、Raylib、GLSL、HTTP、JSON |
+| 程式識別符 | 保留原樣，置於 code span | `Game_State`、`Void_Entity`、`run_count` |
+| 大語言模型縮寫 | 首次寫「大語言模型（LLM）」，後文技術段可用 LLM | LLM context 寫作「情境快照」；system prompt 寫作「系統提示」 |
+| 遊戲概念 | 正文使用中文，英文只作對照 | 輪、餘映、虛空園、虛空典籍、碎片 |
+| UI / 玩家導向文字 | 原則上不出英文，除非是按鍵、平台或專有品牌 | 設定、儲存、返回、套用 |
+
+### 0.3 台灣用字與文件語氣
+
+- 使用台灣常見資訊用語：資料、設定、介面、使用者、執行、效能、畫面、音效、儲存、讀取。
+- 避免直譯腔：少用「進行 X 的動作」「被某種 X 所影響」「這是一個用來 X 的系統」。
+- 定義句要短而準：先說它是什麼，再說用途與邊界。
+- 技術段可以精確，但不要把英文名詞串接成中文句子的骨架。
+
+### 0.4 主要概念的中文主詞
+
+| 英文對照 | 中文主詞 | 正文建議用法 |
+|---|---|---|
+| The Dimming | 消光 | 消光正在侵入邊界。 |
+| Lumen | 靈光 | 結構消耗靈光維持燃燒。 |
+| Beacon | **餘燼** | **餘燼**在餘映中說話。 |
+| Tender | **拾薪者** | 玩家扮演新一任**拾薪者**。 |
+| Void | 虛空 / 虛空生物 | 虛空從邊界進入。 |
+| Void Entity | 虛空個體 | 單一敵人稱為虛空個體。 |
+| Void Garden | 虛空園 | 捕捉後的個體留在虛空園。 |
+| Void Codex | 虛空典籍 | 虛空典籍記錄物種條目。 |
+| Fragment | 碎片 | 聆聽與見證會留下碎片。 |
+| Run | 輪 | 一輪由餘映開始，死亡或結局結束。 |
+| Beacon Reflection | **餘映** | **餘映**是輪與輪之間的整備時段。 |
+| Prep Phase | 佈置階段 | 佈置階段提供 90 秒放置結構。 |
+| Wave Phase | 波次 | 波次是主要防守時段。 |
+| Salvage Phase | 拾荒階段 | 拾荒階段收集殘影與補給。 |
+| Truth Layer | 真相層 | 真相層限制**餘燼**能暗示的內容。 |
+| Beacon Intimacy | **餘溫** | **餘溫**決定**餘燼**的語氣階段。 |
 
 ---
 
@@ -10,22 +62,22 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  World & Lore                                                        │
-│  The Dimming · Lumen · Beacon · Tender · Void（集合名詞）             │
+│  世界觀與傳說                                                        │
+│  消光 · 靈光 · 餘燼 · 拾薪者 · 虛空（集合名詞）                       │
 │  ────────────────────────────────────────────────────────────────── │
 │  ┌─────────────────────┐    ┌──────────────────────────────────────┐ │
-│  │   Combat            │    │   Run Loop                           │ │
-│  │   Void_Entity       │    │   Run · Wave · Reflection            │ │
-│  │   Light_Structure   │    │   Prep · Salvage · Dimming Surge     │ │
-│  │   Lantern           │    └──────────────────────────────────────┘ │
-│  │   Dye · Lumen       │    ┌──────────────────────────────────────┐ │
-│  │   Fog Erosion       │    │   Persistence & Garden               │ │
-│  └─────────────────────┘    │   Void Garden · Void Codex           │ │
-│  ┌─────────────────────┐    │   Beacon Memory · Fragment Tree      │ │
-│  │   Narrative / LLM   │    │   Grief Residue · Named Void         │ │
-│  │   Truth Layer       │    └──────────────────────────────────────┘ │
-│  │   Beacon Intimacy   │                                             │
-│  │   Death Cause       │                                             │
+│  │   戰鬥              │    │   輪迴流程                           │ │
+│  │   虛空個體          │    │   輪 · 波次 · 餘映                   │ │
+│  │   光源結構          │    │   佈置 · 拾荒 · 消光潮               │ │
+│  │   提燈              │    └──────────────────────────────────────┘ │
+│  │   染劑 · 靈光       │    ┌──────────────────────────────────────┐ │
+│  │   霧侵蝕            │    │   持久層與虛空園                     │ │
+│  └─────────────────────┘    │   虛空園 · 虛空典籍                  │ │
+│  ┌─────────────────────┐    │   餘念 · 碎片樹                      │ │
+│  │   敘事 / 大語言模型 │    │   哀傷殘影 · 有名個體                │ │
+│  │   真相層            │    └──────────────────────────────────────┘ │
+│  │   餘溫              │                                             │
+│  │   死因              │                                             │
 │  └─────────────────────┘                                             │
 └──────────────────────────────────────────────────────────────────────┘
 ```
@@ -34,20 +86,23 @@
 
 ---
 
-## 2. 詞彙表
+## 2. 詞彙詳表
 
-每個條目格式：
-- **術語**（英文識別符）— 正體中文名 ← 確立對照的語言層
+每個條目至少要回答三件事：
+- 中文術語是什麼，正文應如何使用
+- 對應的英文概念或 Odin 識別符是什麼
 - 定義、用途範圍、需要特別澄清的歧義
+
+> 整理中的舊表格仍可能先列英文對照；新增或重寫表格一律採「中文術語優先」。
 
 ---
 
-### 2.1 世界觀 / 宇宙觀（World & Lore）
+### 2.1 世界觀與傳說（World & Lore）
 
 | 術語 | 中文 | Odin 識別符 | 定義 |
 |---|---|---|---|
 | **The Dimming** | 消光 | — (narrative only) | 世界系統化的哀悼缺失。非熵事件——是幾世紀燃燒靈魂的累積結果。**不是「黑暗」的同義詞**；The Dimming 是名詞專有，指整個現象。 |
-| **Lumen** | 靈光 | `f32` (raw fuel) / `Lumen_Color` | 死者離去後留下的殘影——同時是燃料與靈魂。**在 World 上下文中是靈魂；在 Combat / Economy 上下文中是可量化資源。兩者是同一個東西，不是兩種東西。** 文學用詞「Spirit」只出現於敘事文本，程式碼一律用 `Lumen`。 |
+| **Lumen** | 靈光 | `f32` (raw fuel) / `Lumen_Color` | 死者離去後留下的殘影——同時是燃料、靈魂與亮度來源。**在 World 上下文中是靈魂；在 Combat / Economy 上下文中是可量化資源。兩者是同一個東西，不是兩種東西。** 「光」是靈光釋放後的可見現象；傷害、耐受、燃料、結構輸出等機制語境，一律以「靈光」為主詞。文學用詞「Spirit」只出現於敘事文本，程式碼一律用 `Lumen`。 |
 | **Beacon** | **餘燼** | — (narrative only) | 古老燈塔的意識，遊戲中唯一的 NPC。出處：cendres（法語：灰燼）——最後沒熄的那一點火。在程式碼中不作為 struct 存在；它的對話由 `narrative/beacon.odin` 管理，數值影響存在 `Game_State` 裡。**不要與 `Beacon_Pillar`（結構種類）混淆。** |
 | **Tender** | **拾薪者** | — | 玩家角色。出處：《莊子．養生主》「指窮於為薪，火傳也，不知其盡也」——你撿柴，**餘燼**燒。歷史上所有操作過**餘燼**的人都稱為**拾薪者**，不只是這一位。程式碼中以 `Player` struct 表示。 |
 | **Void**（集合名詞） | 虛空 / 虛空生物 | `Void_Entity` struct | 被 The Dimming 扭曲的亡靈統稱。**集合名詞用法：Void 不是一個生物，是所有迷失亡靈的統稱。** 個別生物稱 Void Entity，特定種類稱 Void Species。 |
@@ -56,7 +111,7 @@
 
 ---
 
-### 2.2 Void 實體（Entities）
+### 2.2 虛空實體（Void Entities）
 
 | 術語 | 中文 | Odin 識別符 | 定義 |
 |---|---|---|---|
@@ -69,7 +124,7 @@
 | Remnant（物種） | 殘響 | `Void_Species.Remnant` | 保留人格殘影的特殊物種，擁有名字、會說話。**不要與複合 Dye `Remnant`（見 §2.4）混淆**——兩個術語相同但在不同 Bounded Context。 |
 | Behemoth | 巨靈 | `Void_Species.Behemoth` | 唯一無法用 Tether 捕捉的物種。透過「見證」累積跨 run 關係，最終自行走進 Garden。Behemoth 不受 Feral 影響。 |
 | **Temperament** | 氣質 | `Temperament` enum | 個體 AI 行為模式。`base_temperament` 是生成時決定的固定傾向（Curious / Timid / Territorial 三種之一）；`temperament` 是當前值，可被暫時覆寫為 Feral。**Feral 不是第四種基礎傾向，是暫時態。** |
-| Curious | 趨光 | `Temperament.Curious` | 趨 = move toward。向最近光源漂移；僅在緊鄰或依靠 `light_tolerance` 存活時攻擊。 |
+| Curious | 趨光 | `Temperament.Curious` | 趨 = move toward。向最近光源漂移；僅在緊鄰或依靠 `light_tolerance` 抵抗靈光傷害時攻擊。 |
 | Timid | 畏光 | `Temperament.Timid` | 畏 = fear。貼暗區移動，繞開光源半徑。與「趨光」成對立。 |
 | Territorial | 據守 | `Temperament.Territorial` | 據 = hold，守 = guard。生成時鎖定一個目標結構，直線推進，寸步不讓。 |
 | Feral | 狂化 | `Temperament.Feral` | Tether 捕捉被中斷後的暫時狂暴狀態。`temperament_timer` 倒數後回復 `base_temperament`。**只有 Timid 被逼無路時也可觸發。Behemoth 免疫 Feral。** |
@@ -81,8 +136,8 @@
 |---|---|---|---|
 | **Mutation** | 突變 | `Mutation` enum | Void Entity 的罕見個體修飾。大多數個體無 Mutation（`Maybe(Mutation)` 為 `nil`）。**與 Named Void 互斥**——有名字的個體不帶 Mutation。 |
 | `Echoing` | 迴響 | `Mutation.Echoing` | 死亡時在原地留下短暫暗區。敘事方向：聲音比本體活得長。 |
-| `Phasing` | 透光 | `Mutation.Phasing` | 每 N 秒短暫免疫光源傷害。敘事方向：被燒過，學會閃躲。 |
-| `Crystallized` | 結晶 | `Mutation.Crystallized` | 光耐受值偏高，移速降低。敘事方向：在 The Dimming 中存在太久，開始硬化。 |
+| `Phasing` | 透光 | `Mutation.Phasing` | 每 N 秒短暫免疫靈光傷害。敘事方向：被燒過，學會閃躲。 |
+| `Crystallized` | 結晶 | `Mutation.Crystallized` | 靈光耐受度偏高，移速降低。敘事方向：在 The Dimming 中存在太久，開始硬化。 |
 | `Fractured` | 裂魂 | `Mutation.Fractured` | 死亡時分裂為兩個半血小體，分裂個體無 Mutation。敘事方向：一個靈魂裝了兩段未完的記憶。 |
 | `Lucid` | 醒覺 | `Mutation.Lucid` | 聆聽模式觸發更快，Fragment 品質更高。敘事方向：永遠站在門口，永遠想起不來。**與 Named Void 的差異：Named Void 突破了；Lucid 沒有。** |
 
@@ -138,8 +193,8 @@ Codex 分支：Tether 聆聽模式對帶有 Mutation 的個體會解鎖物種條
 
 | 術語 | 中文 | Odin 識別符 | 定義 |
 |---|---|---|---|
-| **Light Source** | 光源 | `Light_Source` struct | 任何發光實體的統稱——包含玩家 Lantern（`is_player = true`）和放置的結構。**「光源」在程式碼中特指此 struct，不可泛稱所有發光事物。** |
-| **Light Structure** | 光源結構 | `Light_Structure` struct | 玩家在戰場放置的塔。`Light_Source` 是「發光效果」的資料；`Light_Structure` 是「可放置物件」的資料。兩者是不同 struct，一個 Light_Structure 對應一個 Light_Source，但不是同一個。 |
+| **Light Source** | 光源 | `Light_Source` struct | 任何輸出靈光亮度的實體資料——包含玩家提燈（`is_player = true`）和放置的結構。**「光源」在程式碼中特指此 struct，不可泛稱所有發光事物；機制描述若涉及傷害或耐受，改稱靈光。** |
+| **Light Structure** | 光源結構 | `Light_Structure` struct | 玩家在戰場放置的塔。`Light_Source` 是「靈光輸出效果」的資料；`Light_Structure` 是「可放置物件」的資料。兩者是不同 struct，一個 Light_Structure 對應一個 Light_Source，但不是同一個。 |
 | **Structure Kind** | 結構種類 | `Structure_Kind` enum | 光源結構的類型。⚠ 以 `10-data-structures.md` 為準（非 `06-combat.md` 舊名）。 |
 | Beacon_Pillar | 燈柱 | `Structure_Kind.Beacon_Pillar` | 360° 中距離，通用覆蓋，佈陣骨幹。偏好 Dye：Weave（耐久）、Ember（持燃）。 |
 | Flashpoint | 閃點 | `Structure_Kind.Flashpoint` | 近距離觸發爆炸，被動等待。偏好 Dye：Ember（效率 +40%）。 |
@@ -164,7 +219,7 @@ Codex 分支：Tether 聆聽模式對帶有 Mutation 的個體會解鎖物種條
 | Corroded | 蝕毀 | `Corrosion_Stage.Corroded` | 結構功能退回基礎狀態，必須手動修復。 |
 | **Fog Erosion** | 霧侵蝕 / 黑暗侵蝕 | `fog_erosion_rate: f32` | The Dimming 的迷霧接觸結構時，持續降低 `capacity`。驅動 Corrosion Stage 推進。 |
 
-**Wave 系統**
+**波次系統**
 
 | 術語 | 中文 | Odin 識別符 | 定義 |
 |---|---|---|---|
@@ -182,7 +237,7 @@ Codex 分支：Tether 聆聽模式對帶有 Mutation 的個體會解鎖物種條
 | 術語 | 中文 | Odin 識別符 | 定義 |
 |---|---|---|---|
 | **Witness Action** | 見證動作 | — (input event) | Void 消散動畫 1.5 秒內按住互動鍵。無 HP 門檻要求。使 Void 留下更完整的 Fragment。**揭露前無 UI 提示，一直存在。** |
-| **Light Tolerance** | 光耐受值 | `light_tolerance: f32` | Void 對光源傷害的免疫程度。0.0 = 在光中完全受傷；1.0 = 完全免疫。 |
+| **Light Tolerance** | 靈光耐受度 | `light_tolerance: f32` | 虛空個體對靈光傷害的耐受程度。0.0 = 在靈光中完全受傷；1.0 = 完全免疫。 |
 
 ---
 
@@ -217,7 +272,7 @@ Codex 分支：Tether 聆聽模式對帶有 Mutation 的個體會解鎖物種條
 
 ---
 
-### 2.5 Run 流程（Run Loop）
+### 2.5 輪迴流程（Run Loop）
 
 | 術語 | 中文 | Odin 識別符 | 定義 |
 |---|---|---|---|
@@ -235,7 +290,7 @@ Codex 分支：Tether 聆聽模式對帶有 Mutation 的個體會解鎖物種條
 
 ---
 
-### 2.6 持久層與 Garden（Persistence & Garden）
+### 2.6 持久層與虛空園（Persistence & Garden）
 
 | 術語 | 中文 | Odin 識別符 | 定義 |
 |---|---|---|---|
@@ -276,15 +331,30 @@ Codex 分支：Tether 聆聽模式對帶有 Mutation 的個體會解鎖物種條
 |---|---|---|
 | 「光」（bare noun） | 可指 Lumen、Light_Source、Lantern、或廣義照明 | 視上下文明確指定其中之一 |
 | 「黑暗」（bare noun） | 可指 The Dimming、Fog Erosion、Dark Period、或字面暗區 | 視上下文明確指定其中之一 |
-| 「捕捉」（未指明方式） | 可指 Tether Capture（§8.4）或 Tether Listening Mode（§8.5） | 明確說「Tether 捕捉流程」或「Tether 聆聽模式」 |
+| 「捕捉」（未指明方式） | 可指牽引捕捉（§8.4）或聆聽模式（§8.5） | 明確說「牽引捕捉流程」或「牽引的聆聽模式」 |
 | 「靈魂」（soul） | 敘事文學詞，程式碼裡不使用 | 程式碼中一律用 `Lumen` |
 | 「精力 / 能量」（energy） | 含糊；可能指 Lumen、Fuel、或 Capacity | 明確說 Lumen（原料）、Fuel（儲量）、Capacity（上限） |
-| 「Tether」（未指明語境） | 三種不同意義（見 §2.3） | 說清楚是 Ability、Capture、Listening Mode、或 Tether_Line |
-| 「tower」 | 英文俗稱，GDD 沒有此詞 | 統一用 Light Structure |
+| 「Tether」（未指明語境） | 三種不同意義（見 §2.3） | 說清楚是牽引能力、牽引捕捉、聆聽模式、或傳導線 |
+| 「tower」 | 英文俗稱，GDD 沒有此詞 | 統一用「光源結構」 |
+
+### 3.1 禁止英文主詞殘留
+
+以下句型會讓 GDD 看起來像英翻中。除非正在討論程式碼識別符，正文一律改成中文主詞。
+
+| 避免寫法 | 改寫方向 |
+|---|---|
+| Void 從邊界進來。 | 虛空從邊界進來。 |
+| Run 開始時選 Lantern。 | 每輪開始時選擇提燈。 |
+| Reflection 可以餵 Garden。 | 餘映中可以照料虛空園。 |
+| Codex 會解鎖 Fragment。 | 虛空典籍會記錄碎片帶來的條目。 |
+| LLM 決定 Beacon 台詞。 | 大語言模型只潤飾**餘燼**台詞，不決定敘事。 |
+| Structure 被 Void 攻擊。 | 光源結構遭虛空個體攻擊。 |
+| Phase 結束後進入 Salvage。 | 波次結束後進入拾荒階段。 |
+| Dimming Boundary 變得更危險。 | 消光邊界變得更危險。 |
 
 ---
 
-## 4. 命名規則（Code Model Alignment）
+## 4. 命名規則（程式模型對齊）
 
 DDD 的「模型程式碼對齊」原則：GDD 術語和 Odin 識別符一一對應，不引入第三套詞彙。
 
@@ -334,7 +404,7 @@ Odin 命名慣例（對應 GDD 統一術語）：
 | 牽引 | 牽引 | Tether | `Lantern_Ability.Tether` |
 | 湧光 | 湧光 | Surge | `Lantern_Ability.Surge` |
 | 斂光 | 斂光 | Dim | `Lantern_Ability.Dim` |
-| 任何發光實體的資料 | 光源 | Light Source | `Light_Source` |
+| 任何輸出靈光亮度的資料 | 光源 | Light Source | `Light_Source` |
 | 放置在戰場的塔 | 光源結構 | Light Structure | `Light_Structure` |
 | 結構種類 | 結構種類 | Structure Kind | `Structure_Kind` enum |
 | 燈柱 | 燈柱 | Beacon_Pillar | `Structure_Kind.Beacon_Pillar` |
@@ -373,4 +443,3 @@ Odin 命名慣例（對應 GDD 統一術語）：
 | 關係階段 | **餘溫** | Beacon Intimacy | `Beacon_Intimacy` enum |
 | 死亡類別 | 死因 | Death Cause | `Death_Cause` enum |
 | 結局 | 結局 | Ending | `Game_Phase.Ending_*` |
-

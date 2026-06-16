@@ -6,7 +6,8 @@ The player (Tender) tends a Beacon, places light structures, and fends off Void 
 across 29+ runs that build toward three distinct endings.
 
 Full design documentation is in **`gdd/`** (Traditional Chinese). Start with
-[`gdd/index.md`](gdd/index.md) for the map; [`gdd/technical/09-technical.md`](gdd/technical/09-technical.md)
+[`gdd/index.md`](gdd/index.md) for the map; [`gdd/language/00-languages.md`](gdd/language/00-languages.md)
+for the canonical Taiwan Traditional Chinese terminology; [`gdd/technical/09-technical.md`](gdd/technical/09-technical.md)
 for architecture; [`gdd/meta/14-development.md`](gdd/meta/14-development.md) for phase roadmap.
 
 **Current state:** scaffold / pre-Phase 0. No game logic exists yet.
@@ -104,6 +105,11 @@ GDD module mapping: **`gdd/technical/09-technical.md` §9.5**.
 
 ## Conventions
 
+- **Terminology:** before changing GDD content, gameplay concepts, narrative text,
+  UI wording, comments that name game concepts, or code identifiers derived from
+  design terms, read [`gdd/language/00-languages.md`](gdd/language/00-languages.md).
+  Use its Taiwan Traditional Chinese terms as the source of truth; English names
+  are for Odin identifiers, external technical terms, and first-use cross-reference.
 - **Naming:** `Ada_Case` for types / enums, `snake_case` for procedures and variables —
   matches the GDD code samples throughout `gdd/technical/09-technical.md`.
 - **Comments:** may be bilingual (English + zh-Hant), matching the GDD style.
