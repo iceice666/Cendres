@@ -193,6 +193,31 @@ Tether 成功               →  Void 從場地移除，儲存
 
 **張力所在：** 最好的捕捉時機，也是最危險的——低 HP 的 Void 往往有健康的同伴在側。玩家必須創造安全捕捉的條件：先清場、用 Surge 造出臨時安全走廊、用 Dim 讓 Curious 氣質 Void 暫時不攻擊（注意：Dim 同時讓 Timid 氣質 Void 更危險），或在引導中旋轉 Lantern，主動應對進入泡泡的威脅。
 
+### 捕捉主動光反制（§8.4 附屬規則）
+
+在 Tether 引導的 3 秒內，目標 Void 依據 `base_temperament` 主動抵抗。**抵抗行為由目標自身發動，與「被中斷（受到旁邊 Void 攻擊）」規則彼此獨立，可同時觸發。**
+
+| 氣質 | 抵抗行為 | 細節 |
+|---|---|---|
+| **Curious** | 暗衝脈衝 ×1（第 1.5 秒觸發） | 壓制玩家 Lantern 半徑 −20%，持續 0.5 秒 |
+| **Territorial** | 暗衝脈衝 ×2（第 1.0 秒 / 第 2.0 秒觸發） | 壓制 −40%，各持續 1.0 秒 |
+| **Timid** | 滑出行為（無脈衝） | 緩慢向最近暗區邊界移動（速度 `capture_slide_speed`）；抵達光源邊緣時 Tether 自然中斷——目標不再位於光源內 |
+| **Feral** | 免疫（無脈衝 / 無滑出） | Feral 狀態下的 Void 只靠物理衝擊打斷，沿用「被中斷」規則 |
+
+**暗衝效果：**
+- 僅壓制**玩家 Lantern**（結構光源不受影響）
+- `effective_radius = lantern.radius × (1.0 − suppression_factor)`
+  - Curious → `suppression_factor = 0.20`
+  - Territorial → `suppression_factor = 0.40`
+- 壓制期間玩家視野縮小，附近同夥更容易進入陰影並破壞引導
+
+**Timid 滑出細節：**
+- 速度低於正常 AI 移動（`capture_slide_speed`，見 §9.2 常數）——像是掙扎，不是立即脫逃
+- 玩家可在放置 Tether 前把 Timid 逼至光源中心（而非邊緣）來對抗此行為
+- 若引導結束前 Timid 未逃離光源，視為捕捉成功
+
+**資料結構：** 見 §9.2 `Capture_State`（管理引導計時與壓制狀態，不汙染 `Void_Entity`）。
+
 ---
 
 ## 8.5 Tether 聆聽模式（揭露後解鎖）

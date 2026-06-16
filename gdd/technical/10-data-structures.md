@@ -107,9 +107,25 @@ dark_period_floor:              f32 : 1.0   // 暗期最低時長（秒）；適
 dark_period_scale:              f32 : 0.015 // 每單位 capacity 增加的暗期長度（秒）
 feral_duration:                 f32 : 5.0   // 捕捉中斷後 Feral 持續時長（秒）
 conversion_decay:               f32 : 0.55  // 活體轉化遞減係數（起始值，可調整）
+capture_slide_speed:            f32 : 0.5   // Timid Void 在 Tether 引導中滑出光源的速度（單位/秒）；低於正常 AI 移動
 
 // conversions_this_reflection: u32  // 本次 Reflection 已轉化次數；每次 Reflection 歸零
 //   → 當 Garden / Run struct 建立時移入對應套件
+
+// === 捕捉狀態（引導期間的即時狀態；不汙染 Void_Entity）===
+// 對應設計規則見 §8.4「捕捉主動光反制」
+Capture_State :: struct {
+    is_active:          bool,
+    target:             ^Void_Entity,
+    channel_timer:      f32,      // 引導已過時間（0 → 3.0 秒）
+    suppression_active: bool,     // 暗衝脈衝效果進行中
+    suppression_timer:  f32,      // 剩餘壓制時長（秒）
+    next_pulse_at:      f32,      // 下次脈衝觸發的 channel_timer 值；Timid / Feral 時無效
+    suppression_factor: f32,      // Curious → 0.20；Territorial → 0.40
+}
+// 有效 Lantern 半徑（渲染 / 碰撞層使用）：
+//   effective_radius = lantern.radius × (1.0 − capture_state.suppression_factor)
+//   suppression_active = false 時 suppression_factor 視為 0
 
 // === 玩家提燈 ===
 Lantern_Kind :: enum { Amber_Core, Ash_Prism, Ember_Wick, Void_Tempered }
