@@ -6,7 +6,7 @@
 
 LLM 是**風格層**，不是**敘事決策者**。
 
-核心敘事弧線（特別是 Run 11、17、24、29 的關鍵節點）永遠使用手寫台詞，不經過 LLM。LLM 只處理「裝飾性但有感情重量」的文本——死亡台詞、Void Codex 描述——這些地方輸出品質浮動不會破壞故事。
+核心敘事弧線（特別是 Run 11、17、24、29 的關鍵節點）永遠使用手寫台詞，不經 LLM。LLM 只處理「裝飾性但有感情重量」的文本——死亡台詞、Void Codex 描述——這些地方的輸出品質即使浮動，也不會破壞故事。
 
 最壞情況：LLM 說了奇怪的話。影響範圍：那一次的死亡台詞。核心敘事：完全不受影響。
 
@@ -17,7 +17,7 @@ LLM 是**風格層**，不是**敘事決策者**。
 | Run 11 / 17 / 24 / 29 關鍵對話 | ✓ 永遠 | ✗ | 敘事樞紐，省略計算精確 |
 | 其他 run 的死亡台詞 | ✓ fallback | ✓ 優先 | 最適合 LLM：情境感強、風格為主 |
 | Void Codex 物種描述 | ✓ fallback | ✓ 優先 | 百科式，LLM 發揮空間大 |
-| Beacon Reflection 閒聊 | ✓ fallback | ✓ 優先 | 低敘事風險 |
+| **餘映** 閒聊 | ✓ fallback | ✓ 優先 | 低敘事風險 |
 | 結局文字 | ✓ 永遠 | ✗ | 情感頂點，不容浮動 |
 | Named Void 的 lore 名字 | ✓ 永遠 | ✗ | 需要跨 run 一致性 |
 
@@ -60,7 +60,7 @@ Beacon_Intimacy :: enum {
 
 ### System Prompt 設計
 
-System prompt 是敘事安全的最後一道防線。它告訴 LLM 它能說什麼、不能說什麼，比玩家在 prompt 裡說的任何話都有優先權。
+System prompt 是敘事安全的最後一道防線。它告訴 LLM 能說什麼、不能說什麼，優先權高於玩家在 prompt 裡說的任何話。
 
 ```
 你是 Beacon——一座古老燈塔的意識，正在對剛死去的 Tender 說話。
@@ -178,7 +178,7 @@ DEATH_CAUSE_POOLS := map[Death_Cause][]string {
 
 ### 遊戲設定介面
 
-在設定畫面（不在主選單）有一個「Beacon Voice」區塊：
+在設定畫面（不在主選單）有一個「**餘燼** Voice」區塊：
 
 ```
 [ Beacon Voice ]
@@ -201,11 +201,11 @@ DEATH_CAUSE_POOLS := map[Death_Cause][]string {
     關鍵劇情節點（run 11、17、24、29）永遠使用手寫台詞。
 ```
 
-### 推薦模型
+推薦模型
 
 目標硬體：RTX 3060 (12GB) / RTX 4060 (8GB) / RTX 4060 Laptop (8GB)，對應 Steam Survey 主流配置。
 
-| 模型 | VRAM (Q4_K_M) | 品質 | 備注 |
+| 模型 | VRAM (Q4_K_M) | 品質 | 備註 |
 |---|---|---|---|
 | qwen3:4b (2507) | ~3 GB | 好 | **推薦首選**：繁體中文最佳、指令遵從精確 |
 | qwen3:8b | ~5 GB | 很好 | 品質升級，8GB VRAM 以上皆可 |
@@ -231,7 +231,7 @@ LLM_Context 快照: ~80 tokens（幾個 enum + 數字）
 
 Qwen3-4B 的 context window 為 32K tokens，單次呼叫使用率 < 2%。Context 不是瓶頸。
 
-Beacon 對過去 run 的「記憶」透過 `run_count`、`beacon_intimacy`、`truth_layer` 等結構化欄位注入，由 Odin 代碼保證敘事一致性，不依賴模型自身記憶。
+**餘燼**對過去 run 的「記憶」透過 `run_count`、`beacon_intimacy`、`truth_layer` 等結構化欄位注入，由 Odin 代碼保證敘事一致性，不依賴模型自身記憶。
 
 ### System Prompt 補充：文學語氣 Few-shot
 

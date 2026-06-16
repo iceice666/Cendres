@@ -23,7 +23,7 @@
 - [ ] 完整 Lantern 能力組
 - [ ] 捕捉 + Void Garden（無培育）
 - [ ] 10 波 run 循環 + 死亡狀態
-- [ ] Beacon：Run 1–5 對話
+- [ ] **餘燼**：Run 1–5 對話
 - [ ] 2 個 lore imprint 放置
 
 ### Phase 2 — Alpha
@@ -34,14 +34,14 @@
 - [ ] Garden 餵食視覺線索：Run 15+ 認出行為、Run 20+ 互相轉向
 - [ ] 命名機制：Fragment 片段列表 UI、Codex 深層條目解鎖
 - [ ] Garden 無上限解鎖條件：每種物種各命名一隻
-- [ ] Beacon Memory 樹（數值升級）
+- [ ] **餘念**樹（數值升級）
 - [ ] Fragment 系統：聆聽模式、見證動作、Fragment 解鎖樹（機制升級）
 - [ ] Void Codex 雙層解鎖（捕捉層 + 聆聽 / 命名深層）
 - [ ] Salvage Phase + Dimming Boundary
 - [ ] Named Void 系統
 - [ ] Behemoth 跨 run 見證累積系統（5 次見證 → 自己走進 Garden）
-- [ ] Behemoth Codex 深層條目（含第一個 Tender 名字，Ending C 所需）
-- [ ] Beacon 對話：Run 1–22（含 Run 11–22 選擇性追問觸發）
+- [ ] Behemoth Codex 深層條目（含第一個**拾薪者**名字，Ending C 所需）
+- [ ] **餘燼**對話：Run 1–22（含 Run 11–22 選擇性追問觸發）
 - [ ] Lore 碎片完整組（Boundary imprint）
 - [ ] Wave grammar 系統（Pressure_Type）
 - [ ] 油畫風格 texture 第一版
@@ -51,11 +51,11 @@
 
 ### Phase 3 — Beta / 內容完成
 
-- [ ] Run 23–29 Beacon 對話
+- [ ] Run 23–29 **餘燼**對話
 - [ ] 三個結局實作
 - [ ] 結局 C（Garden）—— 需要 Behemoth 弧線
-- [ ] 音效方向：物種 motif、Beacon 音調組
-- [ ] Beacon Reflection 房間視覺演化（run 數狀態）
+- [ ] 音效方向：物種 motif、**餘燼**音調組
+- [ ] **餘映**房間視覺演化（run 數狀態）
 - [ ] 全面平衡：Lumen 經濟、波次升級
 
 ---
@@ -71,7 +71,7 @@
 | Void Garden 餵食：主動放入 Lumen（Slime Rancher 式），還是自動消耗？ | Design | 否 |
 | Fragment 和 Lumen 的效率差距多大？記憶路線難度上限在哪？ | Design + Balance | Phase 2 前 |
 | 聆聽模式（Tether 不拉取）的 5–8 秒引導，在波次中是否過長？ | Playtest | 是 |
-| Behemoth 見證的 20 秒閾值在波次壓力下是否可達？需要實測 | Playtest | 是 |
+| Behemoth 見證的 20 秒門檻在波次壓力下是否可行？需要實測 | Playtest | 是 |
 | Garden 兩種路線（燃燒 vs. 記憶）在同一隻生物上互斥——UI 是否需要提示切換的代價？ | Design | 否 |
 | 早期無聲線索的音量 / 頻率校準：要讓玩家「幾乎不注意到」，不能太明顯 | Design + Audio | Phase 2 前 |
 | LLM system prompt 的 truth_layer 約束夠不夠穩健？需要 red-team 測試 | Tech + 敘事 | Phase 2 前 |

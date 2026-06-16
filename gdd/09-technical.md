@@ -6,10 +6,10 @@
 |---|---|---|
 | 語言 | Odin | 低層控制、無 GC 暫停、適合 game loop |
 | Renderer | Raylib | 輕量、API 簡潔；3D 場景 + 自訂 GLSL fragment shader |
-| 視角技術 | Raylib 3D + GLSL shader | per-pixel 亮度由 fragment shader 計算；`DrawModel` 自動傳入 `matModel` |
-| 場景結構 | 箱庭（單一封閉場景） | 情感密度、技術複雜度低 |
+| 視角技術 | Raylib 3D + GLSL shader | 逐像素亮度由 fragment shader 計算；`DrawModel` 自動傳入 `matModel` |
+| 場景結構 | 箱庭（單一封閉場景）| 情感密度高、技術複雜度低 |
 | 資產格式 | PNG sprite、手繪 texture | 油畫視覺風格 |
-| 音效 | Raylib 內建音效 API | 足夠用，不過度工程化 |
+| 音效 | Raylib 內建音效 API | 夠用，不過度工程化 |
 
 ---
 

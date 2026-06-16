@@ -40,6 +40,8 @@ Structure_Kind :: enum {
     Vigil_Lamp,         // Ash，長射程單體
     Void_Mirror,        // Void_Tamed，需要馴化 Void 燃料
     Lumen_Well,         // 無色，被動補充相鄰結構；可緩慢恢復鄰近結構的 capacity
+    Refiner,            // Fragment 樹中期解鎖；消耗 Lumen → 依 recipe 產出 Dye
+    Converter,          // Fragment 樹中期解鎖（Refiner 之後）；混入 Dye + Lumen → Dyed Lumen，自動輸出至周邊戰鬥結構
     Charge_Turret,      // 充能炮臺；傷害依充能量縮放，charge 滿而無目標時損耗 Lumen（見 §8.10）
     Vigilance_Lens,     // 360° 旋轉掃描，偵測 Void 位置；配合隨身 client device + 頻率調音（見 §8.11）
     Echo_Marker,        // 記錄歷史波次進入方向，Prep Phase 顯示熱區（見 §8.12）
@@ -53,7 +55,7 @@ Light_Structure :: struct {
     pos:                rl.Vector2,
     fuel:               f32,
     capacity:           f32,            // 燃料容量上限；霧侵蝕降低此值，可由 Silent_Repair_Unit 或手動修復恢復
-    activation_pct:     f32,            // 激活門檻比例；fuel < capacity × activation_pct 時關機
+    activation_pct:     f32,            // 啟動門檻比例；fuel < capacity × activation_pct 時關機
     activation_timer:   f32,            // >0 表示處於放置／移動後的暗期；歸 0 前結構不作用（見 §8.3）
     corrosion_stage:    Corrosion_Stage, // 廢蝕階段（見 §8.9）
     durability:         f32,
@@ -108,6 +110,10 @@ conversion_decay:               f32 : 0.55  // 活體轉化遞減係數（起始
 
 // conversions_this_reflection: u32  // 本次 Reflection 已轉化次數；每次 Reflection 歸零
 //   → 當 Garden / Run struct 建立時移入對應套件
+
+// === 玩家提燈 ===
+Lantern_Kind :: enum { Amber_Core, Ash_Prism, Ember_Wick, Void_Tempered }
+Lantern_Ability :: enum { Illuminate, Flare, Tether, Surge, Dim }
 
 // === 玩家狀態 ===
 // 視角由 Raylib Camera3D 管理（FIRST_PERSON 模式），不存在 Player struct 中
