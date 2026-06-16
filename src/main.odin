@@ -1,23 +1,44 @@
 package main
 
+// Cendres — first-person tower-defence / roguelite (Odin + Raylib, 3D prototype)
+// See: gdd/index.md for the full design map.
+// See: gdd/meta/14-development.md for phase roadmap. Current state: Phase 0, Step 9.
+
+import game "game"
 import rl "vendor:raylib"
 
-// Cendres — 第一人稱塔防 / Roguelite (Odin + Raylib, raycasting 2.5D)
-// See: gdd/index.md for the full game design map.
-// See: gdd/09-development.md for phase roadmap. Current state: scaffold (pre-Phase 0).
+SCREEN_W :: i32(1280)
+SCREEN_H :: i32(720)
 
 main :: proc() {
-	rl.InitWindow(1280, 720, "Cendres")
+	rl.InitWindow(SCREEN_W, SCREEN_H, "Cendres")
 	defer rl.CloseWindow()
 	rl.SetTargetFPS(60)
+	rl.DisableCursor()
+	defer rl.EnableCursor()
+
+	tile_map := game.make_test_map()
+	player   := game.make_player()
+	drifter  := game.make_drifter(&tile_map, player.pos)
+	renderer := game.make_renderer()
+	defer game.unload_renderer(renderer)
+	amber: game.Amber
 
 	for !rl.WindowShouldClose() {
+		if rl.IsKeyPressed(.ESCAPE) do break
+
+		dt := rl.GetFrameTime()
+		game.update_player(&player, &tile_map, dt)
+		game.update_drifter(&drifter, &tile_map, player.pos, dt)
+		game.update_amber(&amber, &player, dt)
+		if rl.IsKeyPressed(.SPACE) do game.try_flare(&player, &drifter)
+		if rl.IsKeyPressed(.E)     do game.place_amber(&amber, player.pos)
+
 		rl.BeginDrawing()
-		// Void Black (#2A2A2A) background — GDD §2 visual language
-		rl.ClearBackground(rl.Color{0x2A, 0x2A, 0x2A, 0xFF})
-		// Amber (#F5C842) text — GDD §9.2 Lumen_Color.Amber
-		rl.DrawText("Cendres — scaffold", 24, 24, 24, rl.Color{0xF5, 0xC8, 0x42, 0xFF})
-		rl.DrawText("Phase 0 not yet started — see gdd/09-development.md", 24, 56, 18, rl.Color{0xAA, 0xAA, 0xAA, 0xFF})
+		game.draw_scene(&renderer, &player, &drifter, &amber, &tile_map, SCREEN_W, SCREEN_H)
+		// Crosshair
+		rl.DrawLine(SCREEN_W / 2 - 8, SCREEN_H / 2, SCREEN_W / 2 + 8, SCREEN_H / 2, rl.WHITE)
+		rl.DrawLine(SCREEN_W / 2, SCREEN_H / 2 - 8, SCREEN_W / 2, SCREEN_H / 2 + 8, rl.WHITE)
 		rl.EndDrawing()
 	}
 }

@@ -139,3 +139,4 @@ The LLM is a **style layer**, never a narrative decision-maker. Any agent touchi
 - `build/` is in `.gitignore`.
 - Local LLM config (`config.local.*`) is in `.gitignore`.
 - Use Conventional Commits: `feat:`, `fix:`, `build:`, `docs:`, `chore:`.
+- **Commit messages must be in English** — body and subject line both.
