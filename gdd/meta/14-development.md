@@ -3,18 +3,23 @@
 ## 12. 開發階段
 
 ### Phase 0 — Prototype
+> **目標：** 驗證「黑暗中的威脅感」與「燈是命」的核心 feel。Raycasting 拋棄型原型；Phase 1 換成 Raylib 3D + GLSL。
+> **完成標準：** 玩家能感受到「視野在縮小」+「黑暗裡有東西靠近」+「Flare 是要付代價的」。
 
-- [ ] Odin + Raylib 基礎專案設定
-- [ ] 基礎 raycasting renderer（固定牆高）
-- [ ] 玩家移動 + 視角旋轉
-- [ ] 單一光源影響 ray 射程（Illuminate 概念驗證）
-- [ ] 一個 Void 物種（Drifter）+ 基礎 A* pathfinding
-- [ ] Lantern：Illuminate + Flare 僅此兩種
-- [ ] 單一 Amber 結構的放置 + tick
-- [ ] 基礎 Lumen 消耗循環
+- [ ] 步驟 1｜**專案骨架**：Odin + Raylib 編譯通過，黑色視窗開啟
+- [ ] 步驟 2｜**地圖格子資料結構**：`tile_map: [ROWS][COLS]Tile`，區分牆 / 地板（Raycaster 與 A* 的共同前提）
+- [ ] 步驟 3｜**Raycasting renderer + 玩家移動 / 視角**：DDA 射線投影、WASD 移動、滑鼠左右轉（同步實作，有 renderer 才能看到移動結果）
+- [ ] 步驟 4｜**光源半徑限制射線射程**：ray 最大距離 = `lantern_fuel` 換算半徑，超出全黑——**核心 feel 第一次驗證點**
+- [ ] 步驟 5｜**Lumen 被動消耗**：Lantern 自動燒 Lumen，半徑逐漸縮小，壓迫感成立
+- [ ] 步驟 6｜**Drifter 生成 + 直線尋路**：生成一隻 Drifter 直線靠近 Beacon（先不用 A*）——**核心 feel 第二次驗證點**
+- [ ] 步驟 7｜**Flare 能力**：消耗 Lumen 打倒 Drifter，資源取捨閉環成立——**Phase 0 feel 驗證完畢**
+- [ ] 步驟 8｜**A* pathfinding**：Drifter 學會繞牆，威脅感更真實
+- [ ] 步驟 9｜**單一 Amber 結構放置 + tick**：第二光源，驗證「結構撐防線」的感覺
 
 ### Phase 1 — Vertical Slice
+> **Renderer 切換：** 此階段將 Phase 0 的 raycasting 原型替換為 Raylib 3D + GLSL fragment shader（見 §9.3）。地板 / 天花板與多光源疊加因此在此階段一次完成。
 
+- [ ] **Renderer 切換**：Raylib 3D + GLSL（`shaders/light.vs` + `shaders/light.fs`），淘汰 raycasting 原型
 - [ ] 地板 / 天花板明暗渲染（光源感知）
 - [ ] 多光源疊加（玩家 + 結構）
 - [ ] 3 個 Void 物種，各自行為不同
