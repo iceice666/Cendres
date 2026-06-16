@@ -6,8 +6,8 @@ The player (Tender) tends a Beacon, places light structures, and fends off Void 
 across 29+ runs that build toward three distinct endings.
 
 Full design documentation is in **`gdd/`** (Traditional Chinese). Start with
-[`gdd/index.md`](gdd/index.md) for the map; [`gdd/09-technical.md`](gdd/09-technical.md)
-for architecture; [`gdd/14-development.md`](gdd/14-development.md) for phase roadmap.
+[`gdd/index.md`](gdd/index.md) for the map; [`gdd/technical/09-technical.md`](gdd/technical/09-technical.md)
+for architecture; [`gdd/meta/14-development.md`](gdd/meta/14-development.md) for phase roadmap.
 
 **Current state:** scaffold / pre-Phase 0. No game logic exists yet.
 
@@ -98,14 +98,14 @@ src/save/                  package save  — cross-run persistence
 Each stub file currently contains only its `package` declaration + a GDD-section comment
 and a `TODO(Phase N)` marker. They are validated via `just check-all`, not via `main`.
 
-GDD module mapping: **`gdd/09-technical.md` §9.5**.
+GDD module mapping: **`gdd/technical/09-technical.md` §9.5**.
 
 ---
 
 ## Conventions
 
 - **Naming:** `Ada_Case` for types / enums, `snake_case` for procedures and variables —
-  matches the GDD code samples throughout `gdd/09-technical.md`.
+  matches the GDD code samples throughout `gdd/technical/09-technical.md`.
 - **Comments:** may be bilingual (English + zh-Hant), matching the GDD style.
 - **Format:** always `just fmt` before committing.
 - **Imports:** `import rl "vendor:raylib"` for Raylib; use `core` package for any type
