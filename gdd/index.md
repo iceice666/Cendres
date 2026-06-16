@@ -1,5 +1,5 @@
 # CENDRES — Game Design Document
-**Version 0.6 | 缺失子系統定義：氣質系統（§8.1a）、捕捉主動光反制、結構暗期規則、活體轉化遞減**
+**Version 0.6 | 待補子系統定義：氣質系統（§8.1a）、捕捉主動光反制、結構暗期規則、活體轉化遞減**
 
 | 欄位 | 內容 |
 |---|---|
@@ -18,6 +18,7 @@
 
 ```mermaid
 graph TD
+    L[00 Languages\n通用語言]
     V[01 Vision & Pillars\n願景與核心支柱]
     N[03 Narrative\n世界觀與敘事]
     VA[02 Visual & Audio\n視覺與音效]
@@ -30,11 +31,14 @@ graph TD
     DS[10 Data Structures\n核心資料結構]
     RD[11 Renderer\nRaycasting + 地圖]
     LLM[12 LLM System\nLLM 文本生成]
+    WS[17 Writing Style\n繁體中文修辭指南]
     PD[13 Progression & Death\n進程與死亡]
     DEV[14 Development\n開發規劃]
     REF[15 References\n參考來源]
     HTP[16 How to Play\n玩家指南]
 
+    L --> V
+    L --> T
     V --> VA
     V --> N
     V --> RS
@@ -47,6 +51,8 @@ graph TD
     T --> DS
     DS --> RD
     RD --> LLM
+    LLM --> WS
+    N --> WS
     RS --> PD
     PD --> HTP
     V --> DEV
@@ -57,22 +63,28 @@ graph TD
 
 ## 文件索引
 
+### 0. 通用語言（Ubiquitous Language）
+
+| 檔案 | 內容 |
+|---|---|
+| [00-languages.md](00-languages.md) | DDD 通用語言：有界上下文、全域詞彙表、禁止模糊用法、命名規則（GDD ↔ Odin 對照） |
+
 ### A. 核心設計（Design & Vision）
 
 | 檔案 | 內容 |
 |---|---|
-| [01-vision-pillars.md](01-vision-pillars.md) | Vision Statement、核心 Fantasy、五大核心支柱 |
+| [01-vision-pillars.md](01-vision-pillars.md) | 願景宣言、核心 Fantasy、五大核心支柱 |
 | [02-visual-audio.md](02-visual-audio.md) | 視覺語言、色調系統、音效方向 |
-| [03-narrative.md](03-narrative.md) | 世界觀、完整真相、Beacon 角色、玩家起源（§5.5） |
+| [03-narrative.md](03-narrative.md) | 世界觀、完整真相、**餘燼**角色、玩家起源（§5.5） |
 
 ### B. 遊戲系統（Gameplay Systems）
 
 | 檔案 | 內容 |
 |---|---|
 | [04-endings.md](04-endings.md) | 四個結局、結局設計哲學（§6.4 薛西弗斯對照） |
-| [05-run-structure.md](05-run-structure.md) | Run 節拍圖、波次升級、輪間持續性 |
+| [05-run-structure.md](05-run-structure.md) | Run 節拍圖、波次升級、跨輪持續性 |
 | [06-combat.md](06-combat.md) | 戰鬥哲學、Lantern 能力、結構行為、捕捉流程（§8.1–8.6） |
-| [07-economy.md](07-economy.md) | Dye 生產鏈、活體轉化、Fog Erosion（§8.7–8.9） |
+| [07-economy.md](07-economy.md) | Dye 生產鏈、活體轉化、霧蝕系統（§8.7–8.9） |
 | [08-structures.md](08-structures.md) | 結構規格表：Charge Turret、Vigilance Lens、Echo Marker、Tether Line、Silent Repair Unit、Shield Emitter（§8.10–8.15） |
 | [13-progression-death.md](13-progression-death.md) | 玩家進程 Meta-Arc、死亡與敘事整合 |
 
@@ -85,11 +97,17 @@ graph TD
 | [11-renderer.md](11-renderer.md) | 3D + GLSL 光暗系統、場景地圖結構與幾何映射（§9.3–9.4） |
 | [12-llm.md](12-llm.md) | LLM 文本生成系統：設計哲學、Context 結構、System Prompt、fallback（§9.5） |
 
+### C2. 文本風格（Writing Style）
+
+| 檔案 | 內容 |
+|---|---|
+| [17-writing-style.md](17-writing-style.md) | 繁體中文修辭指南：白話文運動過渡期語感、用字句法節奏規則、**餘燼**on / Codex / Imprint 分體裁調整、LLM System Prompt 擴充 |
+
 ### D. 玩家體驗（Player Experience）
 
 | 檔案 | 內容 |
 |---|---|
-| [16-how-to-play.md](16-how-to-play.md) | 揭露哲學備忘、玩家指南（Lumen、Run 節奏、系統取捨、死亡持續性） |
+| [16-how-to-play.md](16-how-to-play.md) | 揭露哲學備忘、玩家指南（Lumen 運作、Run 節奏、系統取捨、死亡後留下什麼） |
 
 ### E. 開發管理（Project）
 
