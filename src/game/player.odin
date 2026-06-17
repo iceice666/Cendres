@@ -70,24 +70,24 @@ update_player :: proc(p: ^Player_2D, m: ^Tile_Map, dt: f32) {
 	if !is_solid(m, int(ny + (COLL if dy >= 0 else -COLL)), int(p.pos.x)) do p.pos.y = ny
 }
 
-// try_flare fires a flare: costs FLARE_COST fuel regardless of hit.
-// Kills d if it is within FLARE_RANGE tiles and within the aim cone.
-try_flare :: proc(p: ^Player_2D, d: ^Drifter) {
+// try_flare fires a flare: costs FLARE_COST fuel regardless of hits.
+// Kills every Void_Entity within FLARE_RANGE and within the aim cone.
+try_flare :: proc(p: ^Player_2D, entities: []Void_Entity) {
 	if p.lantern_fuel < FLARE_COST do return
 	p.lantern_fuel -= FLARE_COST
 	p.flare_flash = FLARE_FLASH_DURATION
 
-	if !d.alive do return
-
-	ex := d.pos.x - p.pos.x
-	ey := d.pos.y - p.pos.y
-	dist := math.sqrt(ex * ex + ey * ey)
-	if dist > FLARE_RANGE do return
-
-	da := math.atan2(ey, ex) - p.angle
-	for da > math.PI do da -= math.PI * 2
-	for da < -math.PI do da += math.PI * 2
-	if abs(da) <= FLARE_AIM_CONE {
-		d.alive = false
+	for &e in entities {
+		if !e.alive do continue
+		ex := e.pos.x - p.pos.x
+		ey := e.pos.y - p.pos.y
+		dist := math.sqrt(ex * ex + ey * ey)
+		if dist > FLARE_RANGE do continue
+		da := math.atan2(ey, ex) - p.angle
+		for da > math.PI do da -= math.PI * 2
+		for da < -math.PI do da += math.PI * 2
+		if abs(da) <= FLARE_AIM_CONE {
+			e.alive = false
+		}
 	}
 }

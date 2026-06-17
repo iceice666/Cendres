@@ -11,8 +11,8 @@ MINI_PAD  :: i32(8)
 
 // draw_hud draws all 2D screen-space UI elements (Layer 3).
 // Must be called last, after draw_overlays, so UI always renders on top.
-draw_hud :: proc(p: ^game.Player_2D, d: ^game.Drifter, m: ^game.Tile_Map, sw, sh: i32) {
-	_draw_minimap(p, d, m, sw, sh)
+draw_hud :: proc(p: ^game.Player_2D, entities: []game.Void_Entity, m: ^game.Tile_Map, sw, sh: i32) {
+	_draw_minimap(p, entities, m, sw, sh)
 
 	// Crosshair
 	rl.DrawLine(sw / 2 - 8, sh / 2, sw / 2 + 8, sh / 2, rl.WHITE)
@@ -23,7 +23,7 @@ draw_hud :: proc(p: ^game.Player_2D, d: ^game.Drifter, m: ^game.Tile_Map, sw, sh
 }
 
 @(private = "file")
-_draw_minimap :: proc(p: ^game.Player_2D, d: ^game.Drifter, m: ^game.Tile_Map, sw, sh: i32) {
+_draw_minimap :: proc(p: ^game.Player_2D, entities: []game.Void_Entity, m: ^game.Tile_Map, sw, sh: i32) {
 	ox := MINI_PAD
 	oy := sh - i32(game.MAP_ROWS) * MINI_TILE - MINI_PAD
 
@@ -40,9 +40,17 @@ _draw_minimap :: proc(p: ^game.Player_2D, d: ^game.Drifter, m: ^game.Tile_Map, s
 	rl.DrawRectangle(px - 2, py - 2, 4, 4, rl.WHITE)
 	rl.DrawLine(px, py, px + i32(math.cos(p.angle) * 8), py + i32(math.sin(p.angle) * 8), rl.WHITE)
 
-	if d.alive {
-		dmx := ox + i32(d.pos.x * f32(MINI_TILE))
-		dmy := oy + i32(d.pos.y * f32(MINI_TILE))
-		rl.DrawRectangle(dmx - 2, dmy - 2, 4, 4, game.DRIFTER_COL)
+	// Draw each void entity as a 4×4 dot in its species colour
+	for &e in entities {
+		if !e.alive do continue
+		col: rl.Color
+		switch e.species {
+		case .Drifter: col = game.DRIFTER_COL
+		case .Lurker:  col = game.LURKER_COL
+		case .Gnasher: col = game.GNASHER_COL
+		}
+		emx := ox + i32(e.pos.x * f32(MINI_TILE))
+		emy := oy + i32(e.pos.y * f32(MINI_TILE))
+		rl.DrawRectangle(emx - 2, emy - 2, 4, 4, col)
 	}
 }
