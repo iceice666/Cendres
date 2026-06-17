@@ -46,11 +46,13 @@ unload_renderer :: proc(r: Renderer) {
 
 // draw_world renders the lit 3D scene (Layer 1) inside an already-open BeginDrawing block.
 // Screen-space overlays and HUD are drawn separately by the render package.
+// drops are rendered after EndShaderMode so they remain bright and visible in dark areas.
 draw_world :: proc(
 	r: ^Renderer,
 	p: ^Player_2D,
 	entities: []Void_Entity,
 	structures: []Structure,
+	drops: []Lumen_Drop,
 	m: ^Tile_Map,
 ) {
 	// Collect all active light sources and pack into contiguous GPU arrays
@@ -136,5 +138,12 @@ draw_world :: proc(
 	}
 
 	rl.EndShaderMode()
+
+	// Lumen drops — rendered unshaded so they stay bright and visible in dark areas.
+	for &d in drops {
+		if !d.active do continue
+		rl.DrawCube({d.pos.x, 0.3, d.pos.y}, 0.2, 0.2, 0.2, LUMEN_DROP_COL)
+	}
+
 	rl.EndMode3D()
 }

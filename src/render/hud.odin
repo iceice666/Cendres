@@ -15,17 +15,27 @@ draw_hud :: proc(
 	p: ^game.Player_2D,
 	entities: []game.Void_Entity,
 	structures: []game.Structure,
+	drops: []game.Lumen_Drop,
 	m: ^game.Tile_Map,
 	sw, sh: i32,
 ) {
-	_draw_minimap(p, entities, structures, m, sw, sh)
+	_draw_minimap(p, entities, structures, drops, m, sw, sh)
 
 	// Crosshair
 	rl.DrawLine(sw / 2 - 8, sh / 2, sw / 2 + 8, sh / 2, rl.WHITE)
 	rl.DrawLine(sw / 2, sh / 2 - 8, sw / 2, sh / 2 + 8, rl.WHITE)
 
-	// TODO(Phase 1): Lantern 燃料計 — depleting fuel bar
-	// TODO(Phase 1): Lumen 計數 — accumulated Lumen counter
+	// Lumen counter — 靈光 wallet balance
+	rl.DrawText(rl.TextFormat("Lumen: %d", i32(p.lumen_carried)), 10, 10, 20, game.LUMEN_DROP_COL)
+
+	// Lantern fuel bar — depletes passively; recharged via F key
+	BAR_W :: i32(200)
+	BAR_H :: i32(12)
+	fuel_ratio := p.lantern_fuel / game.MAX_LANTERN_FUEL
+	bar_fill := i32(f32(BAR_W) * clamp(fuel_ratio, 0, 1))
+	rl.DrawRectangle(10, 38, BAR_W, BAR_H, rl.Color{0x44, 0x44, 0x44, 0xAA})
+	rl.DrawRectangle(10, 38, bar_fill, BAR_H, rl.Color{0xFF, 0xCC, 0x44, 0xFF})
+	rl.DrawText("Lantern", 10, 54, 14, rl.Color{0xAA, 0x88, 0x44, 0xFF})
 }
 
 @(private = "file")
@@ -33,6 +43,7 @@ _draw_minimap :: proc(
 	p: ^game.Player_2D,
 	entities: []game.Void_Entity,
 	structures: []game.Structure,
+	drops: []game.Lumen_Drop,
 	m: ^game.Tile_Map,
 	sw, sh: i32,
 ) {
@@ -68,6 +79,14 @@ _draw_minimap :: proc(
 		smx := ox + i32(s.pos.x * f32(MINI_TILE))
 		smy := oy + i32(s.pos.y * f32(MINI_TILE))
 		rl.DrawRectangle(smx - 1, smy - 1, 3, 3, col)
+	}
+
+	// Lumen drops — 2×2 amber dots on the minimap
+	for &d in drops {
+		if !d.active do continue
+		dmx := ox + i32(d.pos.x * f32(MINI_TILE))
+		dmy := oy + i32(d.pos.y * f32(MINI_TILE))
+		rl.DrawRectangle(dmx - 1, dmy - 1, 2, 2, game.LUMEN_DROP_COL)
 	}
 
 	// Player dot + direction indicator

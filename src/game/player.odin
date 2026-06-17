@@ -20,15 +20,18 @@ FLARE_RANGE :: f32(8.0) // max distance to hit target (tiles)
 FLARE_AIM_CONE :: f32(math.PI / 5.0) // ±36 degree aim tolerance
 FLARE_FLASH_DURATION :: f32(0.12) // screen-flash seconds
 
+STARTING_LUMEN :: f32(20.0) // enough to place ~2 structures at game start
+
 PITCH_LIMIT :: f32(math.PI / 2.5) // ~72 degrees — prevents gimbal flip
 
-// Player_2D holds Phase 0 player state; x/y are tile-space horizontal coords.
+// Player_2D holds Phase 1 player state; x/y are tile-space horizontal coords.
 Player_2D :: struct {
-	pos:          [2]f32,
-	angle:        f32, // yaw in radians; 0 = east (+x), PI/2 = south (+y)
-	pitch:        f32, // pitch in radians; + = look up, clamped to ±PITCH_LIMIT
-	lantern_fuel: f32, // current fuel; used directly as lantern radius (tiles) this phase
-	flare_flash:  f32, // countdown for white screen flash after firing
+	pos:           [2]f32,
+	angle:         f32, // yaw in radians; 0 = east (+x), PI/2 = south (+y)
+	pitch:         f32, // pitch in radians; + = look up, clamped to ±PITCH_LIMIT
+	lantern_fuel:  f32, // current fuel; used directly as lantern radius (tiles) this phase
+	flare_flash:   f32, // countdown for white screen flash after firing
+	lumen_carried: f32, // 靈光 wallet — the player's spendable Lumen balance
 }
 
 make_player :: proc() -> Player_2D {
@@ -38,7 +41,17 @@ make_player :: proc() -> Player_2D {
 		angle = -math.PI / 2.0,
 		pitch = 0,
 		lantern_fuel = MAX_LANTERN_FUEL,
+		lumen_carried = STARTING_LUMEN,
 	}
+}
+
+// refuel_lantern transfers as much Lumen as possible from the player's wallet
+// into the lantern fuel, up to MAX_LANTERN_FUEL.  1 Lumen = 1 fuel unit.
+refuel_lantern :: proc(p: ^Player_2D) {
+	amount := min(MAX_LANTERN_FUEL - p.lantern_fuel, p.lumen_carried)
+	if amount <= 0 do return
+	p.lantern_fuel += amount
+	p.lumen_carried -= amount
 }
 
 update_player :: proc(p: ^Player_2D, m: ^Tile_Map, dt: f32) {
@@ -76,8 +89,9 @@ update_player :: proc(p: ^Player_2D, m: ^Tile_Map, dt: f32) {
 }
 
 // try_flare fires a flare: costs FLARE_COST fuel regardless of hits.
-// Kills every Void_Entity within FLARE_RANGE and within the aim cone.
-try_flare :: proc(p: ^Player_2D, entities: []Void_Entity) {
+// Kills every Void_Entity within FLARE_RANGE and within the aim cone;
+// each kill spawns a Lumen drop at the entity's position.
+try_flare :: proc(p: ^Player_2D, entities: []Void_Entity, drops: []Lumen_Drop) {
 	if p.lantern_fuel < FLARE_COST do return
 	p.lantern_fuel -= FLARE_COST
 	p.flare_flash = FLARE_FLASH_DURATION
@@ -92,6 +106,7 @@ try_flare :: proc(p: ^Player_2D, entities: []Void_Entity) {
 		for da > math.PI do da -= math.PI * 2
 		for da < -math.PI do da += math.PI * 2
 		if abs(da) <= FLARE_AIM_CONE {
+			spawn_lumen_drop(drops, e.pos, void_lumen_value(e.species))
 			e.alive = false
 		}
 	}
