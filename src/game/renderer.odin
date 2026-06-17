@@ -1,34 +1,36 @@
-// 3D renderer — GDD §9.3 (Phase 0 prototype)
-// Raylib Camera3D + custom GLSL shader for per-pixel lantern falloff.
-// Phase 1 will extend this with multi-light support and texture sampling.
+// 3D renderer — GDD §9.3 (Phase 1)
+// Raylib Camera3D + multi-light GLSL shader (shaders/light.fs).
+// Supports up to MAX_LIGHTS additive light sources per frame.
 package game
 
 import "core:math"
-import rl "vendor:raylib"
+import rl   "vendor:raylib"
+import rlgl "vendor:raylib/rlgl"
 
 EYE_HEIGHT :: f32(0.5)
 
-VOID_BLACK  :: rl.Color{0x00, 0x00, 0x00, 0xFF}
-WALL_COL    :: rl.Color{0xAA, 0x88, 0x44, 0xFF}
-FLOOR_COL   :: rl.Color{0x33, 0x33, 0x33, 0xFF}
-DRIFTER_COL :: rl.Color{0xDD, 0xAA, 0xFF, 0xFF}
+VOID_BLACK   :: rl.Color{0x00, 0x00, 0x00, 0xFF}
+WALL_COL     :: rl.Color{0xAA, 0x88, 0x44, 0xFF}
+FLOOR_COL    :: rl.Color{0x33, 0x33, 0x33, 0xFF}
+CEILING_COL  :: rl.Color{0x22, 0x22, 0x22, 0xFF} // slightly darker than floor
+DRIFTER_COL  :: rl.Color{0xDD, 0xAA, 0xFF, 0xFF}
 
 Renderer :: struct {
-	shader:           rl.Shader,
-	player_pos_loc:   i32,
-	radius_loc:       i32,
-	amber_pos_loc:    i32,
-	amber_radius_loc: i32,
+	shader:        rl.Shader,
+	loc_pos:       i32, // lightPos[MAX_LIGHTS]
+	loc_radius:    i32, // lightRadius[MAX_LIGHTS]
+	loc_intensity: i32, // lightIntensity[MAX_LIGHTS]
+	loc_count:     i32, // lightCount
 }
 
 make_renderer :: proc() -> Renderer {
 	shader := rl.LoadShader("shaders/light.vs", "shaders/light.fs")
 	return Renderer{
-		shader           = shader,
-		player_pos_loc   = rl.GetShaderLocation(shader, "playerPos"),
-		radius_loc       = rl.GetShaderLocation(shader, "lanternRadius"),
-		amber_pos_loc    = rl.GetShaderLocation(shader, "amberPos"),
-		amber_radius_loc = rl.GetShaderLocation(shader, "amberRadius"),
+		shader        = shader,
+		loc_pos       = rl.GetShaderLocation(shader, "lightPos"),
+		loc_radius    = rl.GetShaderLocation(shader, "lightRadius"),
+		loc_intensity = rl.GetShaderLocation(shader, "lightIntensity"),
+		loc_count     = rl.GetShaderLocation(shader, "lightCount"),
 	}
 }
 
@@ -39,15 +41,23 @@ unload_renderer :: proc(r: Renderer) {
 // draw_world renders the lit 3D scene (Layer 1) inside an already-open BeginDrawing block.
 // Screen-space overlays and HUD are drawn separately by the render package.
 draw_world :: proc(r: ^Renderer, p: ^Player_2D, d: ^Drifter, a: ^Amber, m: ^Tile_Map) {
-	// Update per-frame shader uniforms
-	player_pos   := rl.Vector3{p.pos.x, EYE_HEIGHT, p.pos.y}
-	radius       := max(p.lantern_fuel, 0.001)
-	amber_pos    := rl.Vector3{a.pos.x, EYE_HEIGHT, a.pos.y}
-	amber_radius := AMBER_RADIUS if a.active else f32(0.0)
-	rl.SetShaderValue(r.shader, r.player_pos_loc,   &player_pos,   .VEC3)
-	rl.SetShaderValue(r.shader, r.radius_loc,       &radius,       .FLOAT)
-	rl.SetShaderValue(r.shader, r.amber_pos_loc,    &amber_pos,    .VEC3)
-	rl.SetShaderValue(r.shader, r.amber_radius_loc, &amber_radius, .FLOAT)
+	// Collect all active light sources and pack into contiguous GPU arrays
+	lights: [MAX_LIGHTS]Light_Source
+	count := collect_lights(p, a, &lights)
+
+	positions:   [MAX_LIGHTS][3]f32
+	radii:       [MAX_LIGHTS]f32
+	intensities: [MAX_LIGHTS]f32
+	for i in 0 ..< int(count) {
+		positions[i]   = {lights[i].pos.x, EYE_HEIGHT, lights[i].pos.y}
+		radii[i]       = lights[i].radius
+		intensities[i] = lights[i].intensity
+	}
+
+	rl.SetShaderValueV(r.shader, r.loc_pos,       rawptr(&positions),   .VEC3,  count)
+	rl.SetShaderValueV(r.shader, r.loc_radius,    rawptr(&radii),       .FLOAT, count)
+	rl.SetShaderValueV(r.shader, r.loc_intensity, rawptr(&intensities), .FLOAT, count)
+	rl.SetShaderValue (r.shader, r.loc_count,     rawptr(&count),       .INT)
 
 	cos_a := math.cos(p.angle)
 	sin_a := math.sin(p.angle)
@@ -65,13 +75,19 @@ draw_world :: proc(r: ^Renderer, p: ^Player_2D, d: ^Drifter, a: ^Amber, m: ^Tile
 	rl.BeginMode3D(camera)
 	rl.BeginShaderMode(r.shader)
 
-	// Floor
+	// Floor + ceiling — per non-solid tile; ceiling drawn with backface culling disabled
+	// so the underside of the plane is visible from below.
+	rlgl.DisableBackfaceCulling()
 	for row in 0 ..< MAP_ROWS {
 		for col in 0 ..< MAP_COLS {
 			if is_solid(m, row, col) do continue
-			rl.DrawPlane({f32(col) + 0.5, 0, f32(row) + 0.5}, {1, 1}, FLOOR_COL)
+			cx := f32(col) + 0.5
+			cz := f32(row) + 0.5
+			rl.DrawPlane({cx, 0,   cz}, {1, 1}, FLOOR_COL)
+			rl.DrawPlane({cx, 2.0, cz}, {1, 1}, CEILING_COL)
 		}
 	}
+	rlgl.EnableBackfaceCulling()
 
 	// Walls
 	for row in 0 ..< MAP_ROWS {

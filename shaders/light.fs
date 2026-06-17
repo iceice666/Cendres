@@ -3,23 +3,27 @@
 in vec3 fragWorldPos;
 in vec4 fragColor;
 
-uniform vec3  playerPos;
-uniform float lanternRadius;
-uniform vec3  amberPos;
-uniform float amberRadius; // 0.0 = no amber placed
+#define MAX_LIGHTS 8
+uniform vec3  lightPos[MAX_LIGHTS];
+uniform float lightRadius[MAX_LIGHTS];
+uniform float lightIntensity[MAX_LIGHTS];
+uniform int   lightCount;
 
 out vec4 finalColor;
 
 void main() {
-    float dist1 = length(fragWorldPos - playerPos);
-    float b1    = clamp(1.0 - dist1 / lanternRadius, 0.0, 1.0);
-
-    float b2 = 0.0;
-    if (amberRadius > 0.0) {
-        float dist2 = length(fragWorldPos - amberPos);
-        b2 = clamp(1.0 - dist2 / amberRadius, 0.0, 1.0);
+    float total = 0.0;
+    for (int i = 0; i < lightCount; i++) {
+        vec2  diff = fragWorldPos.xz - lightPos[i].xz;
+        float dist = length(diff);
+        if (dist < lightRadius[i]) {
+            total += lightIntensity[i] * (1.0 - dist / lightRadius[i]);
+        }
     }
+    float brightness = clamp(total, 0.0, 1.0);
 
-    float brightness = clamp(b1 + b2, 0.0, 1.0);
-    finalColor = vec4(fragColor.rgb * brightness, fragColor.a);
+    // Amber #F5C842 ↔ Void Black #2A2A2A
+    vec3 amber     = vec3(0.961, 0.784, 0.259);
+    vec3 voidBlack = vec3(0.165, 0.165, 0.165);
+    finalColor = vec4(mix(voidBlack, amber, brightness) * fragColor.rgb, 1.0);
 }

@@ -19,9 +19,9 @@
 ### Phase 1 — Vertical Slice
 > **Renderer 切換：** 此階段將 Phase 0 的 raycasting 原型替換為 Raylib 3D + GLSL fragment shader（見 §9.3）。地板 / 天花板與多光源疊加因此在此階段一次完成。
 
-- [ ] **Renderer 切換**：Raylib 3D + GLSL（`shaders/light.vs` + `shaders/light.fs`），淘汰 raycasting 原型
-- [ ] 地板 / 天花板明暗渲染（光源感知）
-- [ ] 多光源疊加（玩家 + 結構）
+- [x] **Renderer 切換**：Raylib 3D + GLSL（`shaders/light.vs` + `shaders/light.fs`），淘汰 raycasting 原型
+- [x] 地板 / 天花板明暗渲染（光源感知）
+- [x] 多光源疊加（玩家 + 結構）
 - [ ] 3 個 Void 物種，各自行為不同
 - [ ] 3 種結構類型
 - [ ] Lumen 經濟端到端運作
