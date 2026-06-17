@@ -1,6 +1,5 @@
 // Tile map — GDD §9.4
-// Phase 0: 2D tile grid; raycasting 的 DDA substrate。
-// Phase 1: 同一份資料轉換為 Raylib 3D 幾何體 + GLSL shader。
+// 2D tile grid shared by A* pathfinding, player collision, and the 3D renderer.
 package game
 
 MAP_COLS :: 24
@@ -54,8 +53,8 @@ make_test_map :: proc() -> Tile_Map {
 	return m
 }
 
-// is_solid 供 raycaster DDA march 使用：牆與邊界皆視為實體。
-// 範圍外一律視為實體（防止 ray 越界）。
+// is_solid 供 A* 尋路與玩家碰撞使用：牆與邊界皆視為實體。
+// 範圍外一律視為實體（防止越界）。
 is_solid :: proc(m: ^Tile_Map, row, col: int) -> bool {
 	if row < 0 || row >= MAP_ROWS || col < 0 || col >= MAP_COLS do return true
 	kind := m[row][col]

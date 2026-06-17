@@ -1,7 +1,7 @@
 # Cendres — Agent Guide
 
 Cendres is a first-person tower-defence / roguelite game built in **Odin + Raylib**,
-using a raycasting 2.5D renderer where the light/dark mechanic is the core combat system.
+using a Raylib 3D + GLSL fragment shader renderer where the light/dark mechanic is the core combat system.
 The player (Tender) tends a Beacon, places light structures, and fends off Void entities
 across 29+ runs that build toward three distinct endings.
 
@@ -10,7 +10,7 @@ Full design documentation is in **`gdd/`** (Traditional Chinese). Start with
 for the canonical Taiwan Traditional Chinese terminology; [`gdd/technical/09-technical.md`](gdd/technical/09-technical.md)
 for architecture; [`gdd/meta/14-development.md`](gdd/meta/14-development.md) for phase roadmap.
 
-**Current state:** scaffold / pre-Phase 0. No game logic exists yet.
+**Current state:** Phase 1 (Vertical Slice). Phase 0 complete; multi-light 3D renderer, three Void species, and layered render pipeline shipped.
 
 ---
 
@@ -23,7 +23,7 @@ currently broken** (compiler-rt-18 fails to compile with apple-sdk-26). The work
 |------|--------|-------|
 | `odin` | homebrew | `brew install odin` — bottle available |
 | `ols` (LSP) | homebrew | `brew install ols` |
-| `odinfmt` | build from source | not bundled by homebrew; see below |
+| `odinfmt` | homebrew | bundled with `ols` — `brew install ols` installs it |
 | `raylib` | nix devShell | 6.0 from nix, provided via `nix develop` |
 | `pkg-config` | nix devShell | wires raylib into the build |
 
@@ -35,13 +35,6 @@ direnv allow                   # enters the nix devShell on cd; adds homebrew to
 # If direnv is not installed:
 nix develop                    # manual devShell entry
 export PATH="/opt/homebrew/bin:$PATH"  # make brew odin visible inside the shell
-```
-
-**`odinfmt` (optional — for `just fmt`):**
-```bash
-git clone https://github.com/DanielGavin/ols /tmp/ols-src
-cd /tmp/ols-src
-odin build odinfmt -out:/usr/local/bin/odinfmt   # or ~/.local/bin/
 ```
 
 Any agent that runs `odin` without first confirming it's on PATH will get
@@ -80,13 +73,13 @@ when inside `nix develop` / direnv. Do not run `odin build` outside the devShell
 ## Package Architecture
 
 One Odin package per directory — Odin forbids import cycles, so cross-cutting
-types will live in `core` once Phase 0 begins:
+types will live in `core` once an import cycle forces it (currently deferred):
 
 ```
 src/main.odin              package main   — entry point (Raylib window)
 src/core/                  package core   — shared types: Player, Light_Source,
                                             Void_Entity, Game_State, LLM_Context, …
-src/game/                  package game   — state, player, raycaster, map, light,
+src/game/                  package game   — state, player, renderer, map, light,
                                             structure, void, wave, lumen
 src/render/                package render — screen compositor, HUD, billboard sprites
 src/narrative/             package narrative — Beacon dialogue, Void Codex, imprints

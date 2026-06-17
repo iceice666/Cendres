@@ -29,7 +29,7 @@ graph TD
     ST[08 Structures\n結構規格表]
     T[09 Technical\n技術架構概覽]
     DS[10 Data Structures\n核心資料結構]
-    RD[11 Renderer\nRaycasting + 地圖]
+    RD[11 Renderer\n3D + GLSL + 地圖]
     LLM[12 LLM System\nLLM 文本生成]
     WS[17 Writing Style\n繁體中文修辭指南]
     PD[13 Progression & Death\n進程與死亡]

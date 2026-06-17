@@ -1,6 +1,6 @@
 // Player movement and view rotation — GDD §9.2 Player, §8.2 Lantern
-// Phase 0: prototype player state driving Raylib Camera3D.
-// Phase 1: replaced by Player struct with fuller Camera3D + Lantern component.
+// Phase 1: Player_2D drives Raylib Camera3D with mouse look, WASD, and flare.
+// Fuller Lantern component (fuel types, ability set) deferred to later milestones.
 package game
 
 import "core:math"

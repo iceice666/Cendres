@@ -1,5 +1,5 @@
 // 光源結構 tick、放置、拆除 — GDD §9.2 Light_Structure, §6
-// Phase 0: single Amber placement as second light source.
+// Phase 1: single Amber structure; full structure roster in later milestones.
 package game
 
 AMBER_RADIUS :: f32(4.0) // light radius in tiles

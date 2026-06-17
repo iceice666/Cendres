@@ -1,4 +1,4 @@
-// A* pathfinding on the tile grid — GDD §9.6 (Phase 0, Step 8)
+// A* pathfinding on the tile grid — GDD §9.6
 package game
 
 import pq "core:container/priority_queue"
