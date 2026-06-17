@@ -4,8 +4,9 @@ package main
 // See: gdd/index.md for the full design map.
 // See: gdd/meta/14-development.md for phase roadmap. Current state: Phase 0, Step 9.
 
-import game "game"
-import rl "vendor:raylib"
+import game   "game"
+import render "render"
+import rl     "vendor:raylib"
 
 SCREEN_W :: i32(1280)
 SCREEN_H :: i32(720)
@@ -35,10 +36,10 @@ main :: proc() {
 		if rl.IsKeyPressed(.E)     do game.place_amber(&amber, player.pos)
 
 		rl.BeginDrawing()
-		game.draw_scene(&renderer, &player, &drifter, &amber, &tile_map, SCREEN_W, SCREEN_H)
-		// Crosshair
-		rl.DrawLine(SCREEN_W / 2 - 8, SCREEN_H / 2, SCREEN_W / 2 + 8, SCREEN_H / 2, rl.WHITE)
-		rl.DrawLine(SCREEN_W / 2, SCREEN_H / 2 - 8, SCREEN_W / 2, SCREEN_H / 2 + 8, rl.WHITE)
+		rl.ClearBackground(game.VOID_BLACK)
+		game.draw_world(&renderer, &player, &drifter, &amber, &tile_map)   // Layer 1: lit 3D world
+		render.draw_overlays(&player, SCREEN_W, SCREEN_H)                  // Layer 2: full-screen FX
+		render.draw_hud(&player, &drifter, &tile_map, SCREEN_W, SCREEN_H)  // Layer 3: UI / HUD
 		rl.EndDrawing()
 	}
 }
