@@ -14,10 +14,11 @@ MINI_PAD :: i32(8)
 draw_hud :: proc(
 	p: ^game.Player_2D,
 	entities: []game.Void_Entity,
+	structures: []game.Structure,
 	m: ^game.Tile_Map,
 	sw, sh: i32,
 ) {
-	_draw_minimap(p, entities, m, sw, sh)
+	_draw_minimap(p, entities, structures, m, sw, sh)
 
 	// Crosshair
 	rl.DrawLine(sw / 2 - 8, sh / 2, sw / 2 + 8, sh / 2, rl.WHITE)
@@ -31,6 +32,7 @@ draw_hud :: proc(
 _draw_minimap :: proc(
 	p: ^game.Player_2D,
 	entities: []game.Void_Entity,
+	structures: []game.Structure,
 	m: ^game.Tile_Map,
 	sw, sh: i32,
 ) {
@@ -51,12 +53,30 @@ _draw_minimap :: proc(
 		}
 	}
 
+	// Active structures — 3×3 filled squares by kind
+	for &s in structures {
+		if !s.active do continue
+		col: rl.Color
+		switch s.kind {
+		case .Beacon_Pillar:
+			col = game.PILLAR_COL
+		case .Vigil_Lamp:
+			col = game.VIGIL_COL
+		case .Flashpoint:
+			col = game.FLASHPOINT_COL
+		}
+		smx := ox + i32(s.pos.x * f32(MINI_TILE))
+		smy := oy + i32(s.pos.y * f32(MINI_TILE))
+		rl.DrawRectangle(smx - 1, smy - 1, 3, 3, col)
+	}
+
+	// Player dot + direction indicator
 	px := ox + i32(p.pos.x * f32(MINI_TILE))
 	py := oy + i32(p.pos.y * f32(MINI_TILE))
 	rl.DrawRectangle(px - 2, py - 2, 4, 4, rl.WHITE)
 	rl.DrawLine(px, py, px + i32(math.cos(p.angle) * 8), py + i32(math.sin(p.angle) * 8), rl.WHITE)
 
-	// Draw each void entity as a 4×4 dot in its species colour
+	// Void entity dots — 4×4 in species colour
 	for &e in entities {
 		if !e.alive do continue
 		col: rl.Color

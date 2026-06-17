@@ -17,6 +17,10 @@ DRIFTER_COL :: rl.Color{0xDD, 0xAA, 0xFF, 0xFF} // 漂魂 — warm magenta
 LURKER_COL :: rl.Color{0x55, 0x44, 0x88, 0xFF} // 潛影 — dark indigo
 GNASHER_COL :: rl.Color{0xCC, 0x44, 0x22, 0xFF} // 噬獸 — rust red
 
+PILLAR_COL :: rl.Color{0xFF, 0xCC, 0x44, 0xFF} // 燈柱 — warm gold
+VIGIL_COL :: rl.Color{0x88, 0xDD, 0xFF, 0xFF} // 守夜燈 — cool azure
+FLASHPOINT_COL :: rl.Color{0xFF, 0x55, 0x22, 0xFF} // 閃點 — danger orange
+
 Renderer :: struct {
 	shader:        rl.Shader,
 	loc_pos:       i32, // lightPos[MAX_LIGHTS]
@@ -42,10 +46,16 @@ unload_renderer :: proc(r: Renderer) {
 
 // draw_world renders the lit 3D scene (Layer 1) inside an already-open BeginDrawing block.
 // Screen-space overlays and HUD are drawn separately by the render package.
-draw_world :: proc(r: ^Renderer, p: ^Player_2D, entities: []Void_Entity, a: ^Amber, m: ^Tile_Map) {
+draw_world :: proc(
+	r: ^Renderer,
+	p: ^Player_2D,
+	entities: []Void_Entity,
+	structures: []Structure,
+	m: ^Tile_Map,
+) {
 	// Collect all active light sources and pack into contiguous GPU arrays
 	lights: [MAX_LIGHTS]Light_Source
-	count := collect_lights(p, a, &lights)
+	count := collect_lights(p, structures, &lights)
 
 	positions: [MAX_LIGHTS][3]f32
 	radii: [MAX_LIGHTS]f32
@@ -112,9 +122,17 @@ draw_world :: proc(r: ^Renderer, p: ^Player_2D, entities: []Void_Entity, a: ^Amb
 		}
 	}
 
-	// Amber structure
-	if a.active {
-		rl.DrawCube({a.pos.x, 0.25, a.pos.y}, 0.5, 0.5, 0.5, rl.Color{0xFF, 0xCC, 0x44, 0xFF})
+	// Light structures — each kind has a distinct silhouette
+	for &s in structures {
+		if !s.active do continue
+		switch s.kind {
+		case .Beacon_Pillar:
+			rl.DrawCube({s.pos.x, 0.5, s.pos.y}, 0.5, 1.0, 0.5, PILLAR_COL)
+		case .Vigil_Lamp:
+			rl.DrawCylinder({s.pos.x, 0, s.pos.y}, 0.08, 0.08, 2.0, 6, VIGIL_COL)
+		case .Flashpoint:
+			rl.DrawCube({s.pos.x, 0.15, s.pos.y}, 0.3, 0.3, 0.3, FLASHPOINT_COL)
+		}
 	}
 
 	rl.EndShaderMode()

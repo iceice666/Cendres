@@ -7,7 +7,7 @@ package game
 
 import "core:math"
 
-PATH_MAX :: 256 // sufficient for any path on 24×20 map
+PATH_MAX :: 256 // sufficient for any shortest path on the current 24×20 prototype map
 
 BEACON_POS :: [2]f32{9.5, 5.5} // world {x=col=9.5, y=row=5.5} centre of Beacon_Core tile
 
@@ -76,7 +76,7 @@ update_void_entity :: proc(
 	e: ^Void_Entity,
 	m: ^Tile_Map,
 	player_pos: [2]f32,
-	amber: ^Amber,
+	structures: []Structure,
 	dt: f32,
 ) {
 	if !e.alive do return
@@ -88,14 +88,23 @@ update_void_entity :: proc(
 	case .Lurker:
 		target = BEACON_POS // goes for the core; distinct flank spawn angle
 	case .Gnasher:
+		// Charges the nearest active structure; falls back to Beacon_Core
 		target = BEACON_POS
-		if amber.active {
-			target = amber.pos // prioritises active light structures
+		nearest := f32(1e30)
+		for &s in structures {
+			if !s.active do continue
+			dx := s.pos.x - e.pos.x
+			dy := s.pos.y - e.pos.y
+			dist := math.sqrt(dx * dx + dy * dy)
+			if dist < nearest {
+				nearest = dist
+				target = s.pos
+			}
 		}
 	}
 
 	cur_tile := [2]int{int(e.pos.y), int(e.pos.x)} // row, col
-	if cur_tile != e.last_tile {
+	if cur_tile != e.last_tile || e.path_idx >= e.path_len {
 		_recompute_path(e, m, target)
 		e.last_tile = cur_tile
 	}

@@ -12,11 +12,15 @@ Light_Source :: struct {
 }
 
 // collect_lights fills out[0..count-1] from all active light sources and returns count.
-collect_lights :: proc(p: ^Player_2D, a: ^Amber, out: ^[MAX_LIGHTS]Light_Source) -> i32 {
+// Flashpoint emits no light.
+collect_lights :: proc(
+	p: ^Player_2D,
+	structures: []Structure,
+	out: ^[MAX_LIGHTS]Light_Source,
+) -> i32 {
 	count: i32 = 0
 
-	// Player Lantern — always present while any fuel remains
-	if p.lantern_fuel > 0 {
+	if p.lantern_fuel > 0 && count < MAX_LIGHTS {
 		out[count] = Light_Source {
 			pos       = p.pos,
 			radius    = max(p.lantern_fuel, 0.001),
@@ -25,14 +29,26 @@ collect_lights :: proc(p: ^Player_2D, a: ^Amber, out: ^[MAX_LIGHTS]Light_Source)
 		count += 1
 	}
 
-	// Amber structure — second light source when placed and fuelled
-	if a.active && count < MAX_LIGHTS {
-		out[count] = Light_Source {
-			pos       = a.pos,
-			radius    = AMBER_RADIUS,
-			intensity = 1.0,
+	for &s in structures {
+		if !s.active || count >= MAX_LIGHTS do continue
+		switch s.kind {
+		case .Beacon_Pillar:
+			out[count] = Light_Source {
+				pos       = s.pos,
+				radius    = PILLAR_RADIUS,
+				intensity = 1.0,
+			}
+			count += 1
+		case .Vigil_Lamp:
+			out[count] = Light_Source {
+				pos       = s.pos,
+				radius    = VIGIL_RADIUS,
+				intensity = VIGIL_INTENSITY,
+			}
+			count += 1
+		case .Flashpoint:
+		// no light emitted
 		}
-		count += 1
 	}
 
 	return count
