@@ -9,7 +9,7 @@ _Astar_Node :: struct {
 }
 
 @(private = "file")
-_astar_less :: proc(a, b: _Astar_Node) -> bool { return a.f < b.f }
+_astar_less :: proc(a, b: _Astar_Node) -> bool {return a.f < b.f}
 
 // astar_fill computes the shortest path from (sr,sc) to (gr,gc) on m.
 // Writes (row,col) waypoints into out[], starting from the step after the
@@ -19,13 +19,13 @@ astar_fill :: proc(m: ^Tile_Map, sr, sc, gr, gc: int, out: [][2]i16) -> int {
 	if sr == gr && sc == gc do return 0
 
 	INF :: f32(1e30)
-	g:      [MAP_ROWS][MAP_COLS]f32
-	par:    [MAP_ROWS][MAP_COLS][2]i16
+	g: [MAP_ROWS][MAP_COLS]f32
+	par: [MAP_ROWS][MAP_COLS][2]i16
 	closed: [MAP_ROWS][MAP_COLS]bool
 
 	for r in 0 ..< MAP_ROWS {
 		for c in 0 ..< MAP_COLS {
-			g[r][c]   = INF
+			g[r][c] = INF
 			par[r][c] = {-1, -1}
 		}
 	}
@@ -45,7 +45,7 @@ astar_fill :: proc(m: ^Tile_Map, sr, sc, gr, gc: int, out: [][2]i16) -> int {
 		r, c := int(cur.row), int(cur.col)
 		if closed[r][c] do continue
 		closed[r][c] = true
-		if r == gr && c == gc { found = true; break }
+		if r == gr && c == gc {found = true; break}
 
 		for i in 0 ..< 4 {
 			nr := r + DR[i]

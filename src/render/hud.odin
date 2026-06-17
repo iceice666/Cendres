@@ -2,16 +2,21 @@
 // Lantern 燃料計 (fuel meter), Lumen 計數 (Lumen counter), minimap, crosshair.
 package render
 
-import "core:math"
 import game "../game"
+import "core:math"
 import rl "vendor:raylib"
 
 MINI_TILE :: i32(5)
-MINI_PAD  :: i32(8)
+MINI_PAD :: i32(8)
 
 // draw_hud draws all 2D screen-space UI elements (Layer 3).
 // Must be called last, after draw_overlays, so UI always renders on top.
-draw_hud :: proc(p: ^game.Player_2D, entities: []game.Void_Entity, m: ^game.Tile_Map, sw, sh: i32) {
+draw_hud :: proc(
+	p: ^game.Player_2D,
+	entities: []game.Void_Entity,
+	m: ^game.Tile_Map,
+	sw, sh: i32,
+) {
 	_draw_minimap(p, entities, m, sw, sh)
 
 	// Crosshair
@@ -23,7 +28,12 @@ draw_hud :: proc(p: ^game.Player_2D, entities: []game.Void_Entity, m: ^game.Tile
 }
 
 @(private = "file")
-_draw_minimap :: proc(p: ^game.Player_2D, entities: []game.Void_Entity, m: ^game.Tile_Map, sw, sh: i32) {
+_draw_minimap :: proc(
+	p: ^game.Player_2D,
+	entities: []game.Void_Entity,
+	m: ^game.Tile_Map,
+	sw, sh: i32,
+) {
 	ox := MINI_PAD
 	oy := sh - i32(game.MAP_ROWS) * MINI_TILE - MINI_PAD
 
@@ -31,7 +41,13 @@ _draw_minimap :: proc(p: ^game.Player_2D, entities: []game.Void_Entity, m: ^game
 		for c in 0 ..< game.MAP_COLS {
 			tile_col: rl.Color = {0x44, 0x44, 0x44, 0xCC}
 			if game.is_solid(m, r, c) do tile_col = rl.Color{0xAA, 0x88, 0x44, 0xCC}
-			rl.DrawRectangle(ox + i32(c) * MINI_TILE, oy + i32(r) * MINI_TILE, MINI_TILE, MINI_TILE, tile_col)
+			rl.DrawRectangle(
+				ox + i32(c) * MINI_TILE,
+				oy + i32(r) * MINI_TILE,
+				MINI_TILE,
+				MINI_TILE,
+				tile_col,
+			)
 		}
 	}
 
@@ -45,9 +61,12 @@ _draw_minimap :: proc(p: ^game.Player_2D, entities: []game.Void_Entity, m: ^game
 		if !e.alive do continue
 		col: rl.Color
 		switch e.species {
-		case .Drifter: col = game.DRIFTER_COL
-		case .Lurker:  col = game.LURKER_COL
-		case .Gnasher: col = game.GNASHER_COL
+		case .Drifter:
+			col = game.DRIFTER_COL
+		case .Lurker:
+			col = game.LURKER_COL
+		case .Gnasher:
+			col = game.GNASHER_COL
 		}
 		emx := ox + i32(e.pos.x * f32(MINI_TILE))
 		emy := oy + i32(e.pos.y * f32(MINI_TILE))

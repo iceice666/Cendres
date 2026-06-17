@@ -4,18 +4,18 @@
 package game
 
 import "core:math"
-import rl   "vendor:raylib"
+import rl "vendor:raylib"
 import rlgl "vendor:raylib/rlgl"
 
 EYE_HEIGHT :: f32(0.5)
 
-VOID_BLACK   :: rl.Color{0x00, 0x00, 0x00, 0xFF}
-WALL_COL     :: rl.Color{0xAA, 0x88, 0x44, 0xFF}
-FLOOR_COL    :: rl.Color{0x33, 0x33, 0x33, 0xFF}
-CEILING_COL  :: rl.Color{0x22, 0x22, 0x22, 0xFF} // slightly darker than floor
-DRIFTER_COL  :: rl.Color{0xDD, 0xAA, 0xFF, 0xFF} // 漂魂 — warm magenta
-LURKER_COL   :: rl.Color{0x55, 0x44, 0x88, 0xFF} // 潛影 — dark indigo
-GNASHER_COL  :: rl.Color{0xCC, 0x44, 0x22, 0xFF} // 噬獸 — rust red
+VOID_BLACK :: rl.Color{0x00, 0x00, 0x00, 0xFF}
+WALL_COL :: rl.Color{0xAA, 0x88, 0x44, 0xFF}
+FLOOR_COL :: rl.Color{0x33, 0x33, 0x33, 0xFF}
+CEILING_COL :: rl.Color{0x22, 0x22, 0x22, 0xFF} // slightly darker than floor
+DRIFTER_COL :: rl.Color{0xDD, 0xAA, 0xFF, 0xFF} // 漂魂 — warm magenta
+LURKER_COL :: rl.Color{0x55, 0x44, 0x88, 0xFF} // 潛影 — dark indigo
+GNASHER_COL :: rl.Color{0xCC, 0x44, 0x22, 0xFF} // 噬獸 — rust red
 
 Renderer :: struct {
 	shader:        rl.Shader,
@@ -27,12 +27,12 @@ Renderer :: struct {
 
 make_renderer :: proc() -> Renderer {
 	shader := rl.LoadShader("shaders/light.vs", "shaders/light.fs")
-	return Renderer{
-		shader        = shader,
-		loc_pos       = rl.GetShaderLocation(shader, "lightPos"),
-		loc_radius    = rl.GetShaderLocation(shader, "lightRadius"),
+	return Renderer {
+		shader = shader,
+		loc_pos = rl.GetShaderLocation(shader, "lightPos"),
+		loc_radius = rl.GetShaderLocation(shader, "lightRadius"),
 		loc_intensity = rl.GetShaderLocation(shader, "lightIntensity"),
-		loc_count     = rl.GetShaderLocation(shader, "lightCount"),
+		loc_count = rl.GetShaderLocation(shader, "lightCount"),
 	}
 }
 
@@ -47,26 +47,26 @@ draw_world :: proc(r: ^Renderer, p: ^Player_2D, entities: []Void_Entity, a: ^Amb
 	lights: [MAX_LIGHTS]Light_Source
 	count := collect_lights(p, a, &lights)
 
-	positions:   [MAX_LIGHTS][3]f32
-	radii:       [MAX_LIGHTS]f32
+	positions: [MAX_LIGHTS][3]f32
+	radii: [MAX_LIGHTS]f32
 	intensities: [MAX_LIGHTS]f32
 	for i in 0 ..< int(count) {
-		positions[i]   = {lights[i].pos.x, EYE_HEIGHT, lights[i].pos.y}
-		radii[i]       = lights[i].radius
+		positions[i] = {lights[i].pos.x, EYE_HEIGHT, lights[i].pos.y}
+		radii[i] = lights[i].radius
 		intensities[i] = lights[i].intensity
 	}
 
-	rl.SetShaderValueV(r.shader, r.loc_pos,       rawptr(&positions),   .VEC3,  count)
-	rl.SetShaderValueV(r.shader, r.loc_radius,    rawptr(&radii),       .FLOAT, count)
+	rl.SetShaderValueV(r.shader, r.loc_pos, rawptr(&positions), .VEC3, count)
+	rl.SetShaderValueV(r.shader, r.loc_radius, rawptr(&radii), .FLOAT, count)
 	rl.SetShaderValueV(r.shader, r.loc_intensity, rawptr(&intensities), .FLOAT, count)
-	rl.SetShaderValue (r.shader, r.loc_count,     rawptr(&count),       .INT)
+	rl.SetShaderValue(r.shader, r.loc_count, rawptr(&count), .INT)
 
 	cos_a := math.cos(p.angle)
 	sin_a := math.sin(p.angle)
 	cos_p := math.cos(p.pitch)
 	sin_p := math.sin(p.pitch)
 
-	camera := rl.Camera3D{
+	camera := rl.Camera3D {
 		position   = {p.pos.x, EYE_HEIGHT, p.pos.y},
 		target     = {p.pos.x + cos_a * cos_p, EYE_HEIGHT + sin_p, p.pos.y + sin_a * cos_p},
 		up         = {0, 1, 0},
@@ -85,7 +85,7 @@ draw_world :: proc(r: ^Renderer, p: ^Player_2D, entities: []Void_Entity, a: ^Amb
 			if is_solid(m, row, col) do continue
 			cx := f32(col) + 0.5
 			cz := f32(row) + 0.5
-			rl.DrawPlane({cx, 0,   cz}, {1, 1}, FLOOR_COL)
+			rl.DrawPlane({cx, 0, cz}, {1, 1}, FLOOR_COL)
 			rl.DrawPlane({cx, 2.0, cz}, {1, 1}, CEILING_COL)
 		}
 	}

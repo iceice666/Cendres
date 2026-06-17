@@ -11,9 +11,9 @@ Cell_Kind :: enum u8 {
 	Empty,
 	Wall,
 	Structure_Slot, // 可放置塔的位置
-	Imprint,        // Lore 環境碎片
-	Beacon_Core,    // 進入觸發 Reflection
-	Boundary,       // Salvage Phase 的暗區
+	Imprint, // Lore 環境碎片
+	Beacon_Core, // 進入觸發 Reflection
+	Boundary, // Salvage Phase 的暗區
 }
 
 Tile_Map :: [MAP_ROWS][MAP_COLS]Cell_Kind
@@ -23,7 +23,7 @@ Tile_Map :: [MAP_ROWS][MAP_COLS]Cell_Kind
 // 中段兩組障礙柱讓 raycaster 有幾何可以投影。
 // '#' = Wall  '.' = Empty  'B' = Beacon_Core  'S' = Structure_Slot
 make_test_map :: proc() -> Tile_Map {
-	layout := [MAP_ROWS]string{
+	layout := [MAP_ROWS]string {
 		"########################", //  0
 		"#......................#", //  1
 		"#....##########........#", //  2

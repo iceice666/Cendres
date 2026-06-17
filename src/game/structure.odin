@@ -2,8 +2,8 @@
 // Phase 0: single Amber placement as second light source.
 package game
 
-AMBER_RADIUS :: f32(4.0)  // light radius in tiles
-AMBER_DRAIN  :: f32(0.05) // fuel/second drained from player's lantern while active
+AMBER_RADIUS :: f32(4.0) // light radius in tiles
+AMBER_DRAIN :: f32(0.05) // fuel/second drained from player's lantern while active
 
 Amber :: struct {
 	pos:    [2]f32,
@@ -11,7 +11,7 @@ Amber :: struct {
 }
 
 place_amber :: proc(a: ^Amber, pos: [2]f32) {
-	a.pos    = pos
+	a.pos = pos
 	a.active = true
 }
 

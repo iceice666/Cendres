@@ -13,12 +13,12 @@ BEACON_POS :: [2]f32{9.5, 5.5} // world {x=col=9.5, y=row=5.5} centre of Beacon_
 
 // Per-species movement speeds (tiles/second)
 DRIFTER_SPEED :: f32(1.5)
-LURKER_SPEED  :: f32(1.0)
+LURKER_SPEED :: f32(1.0)
 GNASHER_SPEED :: f32(2.2)
 
 Void_Species :: enum u8 {
 	Drifter, // 漂魂 — drawn to light, harasses player
-	Lurker,  // 潛影 — goes for the core via flank spawn; player-avoidance TODO(Phase 2)
+	Lurker, // 潛影 — goes for the core via flank spawn; player-avoidance TODO(Phase 2)
 	Gnasher, // 噬獸 — ignores player, charges structures
 }
 
@@ -42,14 +42,14 @@ make_void_entity :: proc(species: Void_Species, m: ^Tile_Map, player_pos: [2]f32
 		spawn = {20.5, 10.5} // east mid-map (tile centre)
 		speed = DRIFTER_SPEED
 	case .Lurker:
-		spawn = {22.5, 1.5}  // northeast corner — flanks toward Beacon
+		spawn = {22.5, 1.5} // northeast corner — flanks toward Beacon
 		speed = LURKER_SPEED
 	case .Gnasher:
-		spawn = {1.5, 18.5}  // southwest corner — charges across map
+		spawn = {1.5, 18.5} // southwest corner — charges across map
 		speed = GNASHER_SPEED
 	}
 
-	e := Void_Entity{
+	e := Void_Entity {
 		species   = species,
 		pos       = spawn,
 		alive     = true,
@@ -59,9 +59,12 @@ make_void_entity :: proc(species: Void_Species, m: ^Tile_Map, player_pos: [2]f32
 
 	target: [2]f32
 	switch species {
-	case .Drifter: target = player_pos
-	case .Lurker:  target = BEACON_POS
-	case .Gnasher: target = BEACON_POS
+	case .Drifter:
+		target = player_pos
+	case .Lurker:
+		target = BEACON_POS
+	case .Gnasher:
+		target = BEACON_POS
 	}
 	_recompute_path(&e, m, target)
 	return e
@@ -69,15 +72,21 @@ make_void_entity :: proc(species: Void_Species, m: ^Tile_Map, player_pos: [2]f32
 
 // update_void_entity advances one entity by dt seconds.
 // Target selection varies by species; all navigate with A*.
-update_void_entity :: proc(e: ^Void_Entity, m: ^Tile_Map, player_pos: [2]f32, amber: ^Amber, dt: f32) {
+update_void_entity :: proc(
+	e: ^Void_Entity,
+	m: ^Tile_Map,
+	player_pos: [2]f32,
+	amber: ^Amber,
+	dt: f32,
+) {
 	if !e.alive do return
 
 	target: [2]f32
 	switch e.species {
 	case .Drifter:
-		target = player_pos   // relentlessly follows the player
+		target = player_pos // relentlessly follows the player
 	case .Lurker:
-		target = BEACON_POS   // goes for the core; distinct flank spawn angle
+		target = BEACON_POS // goes for the core; distinct flank spawn angle
 	case .Gnasher:
 		target = BEACON_POS
 		if amber.active {
@@ -97,7 +106,7 @@ update_void_entity :: proc(e: ^Void_Entity, m: ^Tile_Map, player_pos: [2]f32, am
 	ty := f32(wp[0]) + 0.5 // row → world y
 	dx := tx - e.pos.x
 	dy := ty - e.pos.y
-	dist := math.sqrt(dx*dx + dy*dy)
+	dist := math.sqrt(dx * dx + dy * dy)
 	if dist < 0.1 {
 		e.path_idx += 1
 		return
